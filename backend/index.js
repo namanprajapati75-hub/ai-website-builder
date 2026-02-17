@@ -7,6 +7,10 @@ const Groq = require("groq-sdk");
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("AI Website Builder is LIVE 🚀");
+});
+
 app.use(express.static(path.join(__dirname, "../public")));
 
 
