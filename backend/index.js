@@ -1,11 +1,14 @@
 require("dotenv").config();
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const Groq = require("groq-sdk");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "../public")));
+
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -134,6 +137,9 @@ app.post("/generate", async (req, res) => {
     console.error(err);
     res.json({ error: "Groq API Error" });
   }
+});
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 app.listen(3000, () => {
