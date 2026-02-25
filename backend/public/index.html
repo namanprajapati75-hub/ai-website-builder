@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AI Builder — Naman</title>
+<title>AI Website Builder</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -16,17 +16,17 @@
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;display:flex;flex-direction:column}
 
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
+/* BG EFFECTS */
 .blobs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .blob{position:absolute;border-radius:50%;filter:blur(130px);opacity:0.07;animation:bf 22s ease-in-out infinite}
 .b1{width:550px;height:550px;background:radial-gradient(circle,#63ffb4,transparent 70%);top:-180px;left:-120px;animation-duration:26s}
 .b2{width:450px;height:450px;background:radial-gradient(circle,#00e5ff,transparent 70%);bottom:-120px;right:-80px;animation-duration:19s;animation-delay:-9s}
 @keyframes bf{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(35px,-25px) scale(1.04)}66%{transform:translate(-20px,18px) scale(0.96)}}
-.scanline{position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan 5s linear infinite;opacity:0.15;z-index:9998;pointer-events:none}
+.scanline{position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan 5s linear infinite;opacity:0.15;z-index:1;pointer-events:none}
 @keyframes scan{0%{top:-1px}100%{top:100vh}}
 
-/* ── TOPBAR ── */
-.topbar{height:50px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(4,6,13,0.92);backdrop-filter:blur(20px);flex-shrink:0;position:relative;z-index:200}
+/* TOPBAR */
+.topbar{height:50px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(4,6,13,0.92);backdrop-filter:blur(20px);flex-shrink:0;position:relative;z-index:100}
 .logo{display:flex;align-items:center;gap:9px}
 .logo-icon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:13px;box-shadow:0 0 14px rgba(99,255,180,0.28);flex-shrink:0}
 .logo-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -45,19 +45,20 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .sdot.err{background:var(--danger);box-shadow:0 0 5px var(--danger)}
 @keyframes sp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.75)}}
 
-/* ── LAYOUT ── */
+/* LAYOUT */
 .app-body{flex:1;display:flex;overflow:hidden;position:relative;z-index:10}
 
-/* ── LEFT PANEL ── */
-.left-panel{width:280px;min-width:280px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--surface);overflow:hidden}
-.panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
-.ptab{flex:1;padding:11px 0;font-size:10px;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;transition:0.15s;border-bottom:2px solid transparent}
+/* LEFT PANEL */
+.left-panel{width:280px;min-width:280px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--surface);overflow:hidden;position:relative;z-index:20}
+.panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.panel-tabs::-webkit-scrollbar{display:none}
+.ptab{flex:1;min-width:fit-content;padding:11px 8px;font-size:9px;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'JetBrains Mono',monospace;letter-spacing:0.8px;text-transform:uppercase;transition:0.15s;border-bottom:2px solid transparent;white-space:nowrap}
 .ptab:hover{color:var(--text)}
 .ptab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .panel-page{display:none;flex-direction:column;flex:1;overflow:hidden}
 .panel-page.active{display:flex}
 
-/* ── GENERATE PAGE ── */
+/* GENERATE PAGE */
 .gen-page{padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;flex:1}
 .gen-page::-webkit-scrollbar{width:3px}
 .gen-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
@@ -84,7 +85,32 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .sbar.bad{border-color:rgba(255,77,109,0.3);color:var(--danger)}
 .sbar.warn{border-color:rgba(245,158,11,0.3);color:var(--warn)}
 
-/* ── CHAT PAGE ── */
+/* TEMPLATE GALLERY */
+.tmpl-page{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.tmpl-page::-webkit-scrollbar{width:3px}
+.tmpl-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.tmpl-search{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;transition:border-color 0.2s}
+.tmpl-search:focus{border-color:rgba(99,255,180,0.4)}
+.tmpl-search::placeholder{color:var(--muted)}
+.tmpl-grid{display:flex;flex-direction:column;gap:6px}
+.tmpl-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;cursor:default;transition:all 0.18s;position:relative;overflow:hidden;animation:slideIn 0.2s ease}
+.tmpl-card:hover{border-color:var(--border-bright)}
+.tmpl-card-top{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.tmpl-icon{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:15px;flex-shrink:0;border:1px solid var(--border)}
+.tmpl-name{font-size:12px;color:var(--text);font-weight:600;font-family:'Syne',sans-serif}
+.tmpl-tag{font-size:8px;padding:2px 6px;border-radius:10px;letter-spacing:1px;text-transform:uppercase;margin-left:auto;flex-shrink:0}
+.tmpl-tag.popular{color:var(--accent);background:rgba(99,255,180,0.1);border:1px solid rgba(99,255,180,0.2)}
+.tmpl-tag.new{color:var(--accent2);background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.2)}
+.tmpl-tag.hot{color:var(--accent3);background:rgba(255,107,157,0.1);border:1px solid rgba(255,107,157,0.2)}
+.tmpl-desc{font-size:10px;color:var(--muted);line-height:1.5;padding-left:39px}
+.tmpl-actions{display:flex;gap:5px;margin-top:8px;padding-left:39px}
+.tmpl-btn-use{font-size:9px;padding:4px 10px;border:1px solid rgba(99,255,180,0.3);border-radius:5px;background:transparent;color:var(--accent);cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.8px;transition:0.15s}
+.tmpl-btn-use:hover{background:rgba(99,255,180,0.08)}
+.tmpl-btn-gen{font-size:9px;padding:4px 10px;border:none;border-radius:5px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04060d;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:0.8px;transition:0.15s}
+.tmpl-btn-gen:hover{opacity:0.85;transform:translateY(-1px)}
+.tmpl-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted)}
+
+/* CHAT PAGE */
 .chat-page{display:flex;flex-direction:column;flex:1;overflow:hidden}
 .chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
 .chat-messages::-webkit-scrollbar{width:3px}
@@ -99,8 +125,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .msg-bubble{max-width:85%;padding:8px 11px;border-radius:10px;font-size:11px;line-height:1.6}
 .msg-user .msg-bubble{background:rgba(99,255,180,0.12);border:1px solid rgba(99,255,180,0.2);color:var(--accent)}
 .msg-ai .msg-bubble{background:var(--surface2);border:1px solid var(--border);color:var(--text)}
-.msg-ai.typing .msg-bubble::after{content:'...';animation:dots 1.2s infinite}
-@keyframes dots{0%{content:'...'}33%{content:'....'}66%{content:'.....'}100%{content:'...'}}
+.msg-ai.typing .msg-bubble::after{content:'▌';animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .msg-time{font-size:8px;color:var(--muted);padding:0 4px}
 .chat-suggestions{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px;border-top:1px solid var(--border)}
 .sugg{font-size:9px;padding:3px 8px;border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;transition:0.15s;white-space:nowrap}
@@ -109,11 +135,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;resize:none;height:36px;transition:border-color 0.2s;line-height:1.5}
 .chat-input:focus{border-color:rgba(99,255,180,0.4)}
 .chat-input::placeholder{color:var(--muted)}
-.chat-send{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;cursor:pointer;display:grid;place-items:center;font-size:14px;transition:all 0.2s;flex-shrink:0;color:#04060d}
+.chat-send{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;cursor:pointer;display:grid;place-items:center;font-size:14px;transition:all 0.2s;flex-shrink:0;color:#04060d;font-weight:700}
 .chat-send:hover{transform:scale(1.05);box-shadow:0 4px 14px rgba(99,255,180,0.3)}
 .chat-send:disabled{opacity:0.4;cursor:not-allowed;transform:none}
 
-/* ── PROJECTS PAGE ── */
+/* PROJECTS PAGE */
 .proj-page{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
 .proj-page::-webkit-scrollbar{width:3px}
 .proj-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
@@ -129,10 +155,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .proj-card:hover .proj-card-del{opacity:1}
 .proj-card-del:hover{color:var(--danger)}
 .proj-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted);letter-spacing:0.5px}
-</style>
-<style>
 
-/* ── VERSIONS PAGE ── */
+/* VERSIONS PAGE */
 .ver-page{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px}
 .ver-page::-webkit-scrollbar{width:3px}
 .ver-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
@@ -150,8 +174,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .ver-restore-btn{width:100%;padding:7px;background:transparent;border:1px solid rgba(99,255,180,0.2);border-radius:6px;color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;transition:0.2s;letter-spacing:1px;margin-top:4px;text-transform:uppercase}
 .ver-restore-btn:hover{background:rgba(99,255,180,0.08)}
 
-/* ── RIGHT PANEL ── */
-.right-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
+/* RIGHT PANEL */
+.right-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:10}
 .preview-toolbar{height:42px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 14px;flex-shrink:0;background:rgba(8,13,26,0.85)}
 .tl{display:flex;align-items:center;gap:7px}
 .tc{flex:1;display:flex;align-items:center;justify-content:center;gap:5px}
@@ -173,7 +197,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .urlbar{flex:1;max-width:340px;height:20px;background:var(--bg);border-radius:4px;border:1px solid var(--border);display:flex;align-items:center;padding:0 8px;gap:4px}
 .ulock{font-size:9px;color:var(--accent)}.utxt{font-size:9px;color:var(--muted)}
 .content-area{flex:1;display:flex;overflow:hidden;position:relative}
-/* PREVIEW */
 .preview-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;align-items:center;background:#111827;transition:all 0.3s}
 .preview-panel.mobile-view,.preview-panel.tablet-view{background:#1a1a2e;justify-content:center;padding:16px 0}
 .dev-frame{width:100%;height:100%;transition:all 0.32s cubic-bezier(0.4,0,0.2,1)}
@@ -181,19 +204,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .dev-frame.tablet{width:768px;height:calc(100% - 32px);border-radius:18px;overflow:hidden;border:9px solid #1e293b;box-shadow:0 0 0 2px #0f172a,0 28px 70px rgba(0,0,0,0.55)}
 .dev-frame.desktop{width:100%;height:100%;border-radius:0;border:none;box-shadow:none}
 iframe{width:100%;height:100%;border:none;display:block;background:#fff}
-/* EMPTY */
-.empty-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;transition:opacity 0.4s}
-.empty-state.gone{opacity:0}
+.empty-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;transition:opacity 0.4s;z-index:5}
+.empty-state.gone{opacity:0;pointer-events:none}
 .eorb{width:65px;height:65px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(99,255,180,0.2),transparent 70%);border:1px solid rgba(99,255,180,0.15);display:grid;place-items:center;font-size:24px;animation:op 3s ease-in-out infinite}
 @keyframes op{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.05);opacity:1}}
 .etitle{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;background:linear-gradient(135deg,#fff,var(--muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .esub{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
 .ehint{font-size:9px;color:var(--muted);opacity:0.4}
-/* STREAM OVERLAY */
 .sovlay{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(8,13,26,0.95);border:1px solid rgba(99,255,180,0.2);border-radius:9px;padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:10px;color:var(--accent);backdrop-filter:blur(10px);opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:50}
 .sovlay.show{opacity:1}
 .sring{width:12px;height:12px;border-radius:50%;border:2px solid rgba(99,255,180,0.2);border-top-color:var(--accent);animation:spin 0.8s linear infinite;flex-shrink:0}
-/* EDITOR */
 .editor-panel{flex:1;overflow:hidden;display:none;flex-direction:column}
 .editor-panel.vis{display:flex}
 .etopbar{height:34px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 12px;flex-shrink:0}
@@ -201,7 +221,6 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 .eactions{display:flex;gap:4px}
 .ebtn{padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.8px;transition:0.15s}
 .ebtn:hover{border-color:var(--border-bright);color:var(--accent)}
-/* SPLIT */
 .split-panel{flex:1;display:none;overflow:hidden}
 .split-panel.vis{display:flex}
 .split-prev{flex:1;overflow:hidden;position:relative;border-right:1px solid var(--border)}
@@ -209,7 +228,7 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 .rhandle{width:4px;background:var(--border);cursor:col-resize;transition:background 0.15s;flex-shrink:0}
 .rhandle:hover,.rhandle.dragging{background:var(--accent)}
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(4,6,13,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
 .modal-overlay.show{opacity:1;pointer-events:all}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;width:360px;animation:modalIn 0.25s ease}
@@ -223,34 +242,6 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 .mbtn-cancel:hover{border-color:var(--border-bright);color:var(--text)}
 .mbtn-ok{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#04060d;font-weight:700}
 .mbtn-ok:hover{opacity:0.9;transform:translateY(-1px)}
-
-/* ── TEMPLATE GALLERY ── */
-.tmpl-page{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
-.tmpl-page::-webkit-scrollbar{width:3px}
-.tmpl-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.tmpl-search{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;transition:border-color 0.2s}
-.tmpl-search:focus{border-color:rgba(99,255,180,0.4)}
-.tmpl-search::placeholder{color:var(--muted)}
-.tmpl-cat-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:4px 2px}
-.tmpl-grid{display:flex;flex-direction:column;gap:6px}
-.tmpl-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;cursor:pointer;transition:all 0.18s;position:relative;overflow:hidden;animation:slideIn 0.2s ease}
-.tmpl-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,255,180,0.04),transparent);opacity:0;transition:0.2s}
-.tmpl-card:hover{border-color:var(--border-bright);transform:translateX(2px)}
-.tmpl-card:hover::before{opacity:1}
-.tmpl-card-top{display:flex;align-items:center;gap:9px;margin-bottom:5px}
-.tmpl-icon{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:15px;flex-shrink:0;border:1px solid var(--border)}
-.tmpl-name{font-size:12px;color:var(--text);font-weight:600;font-family:'Syne',sans-serif}
-.tmpl-tag{font-size:8px;padding:2px 6px;border-radius:10px;letter-spacing:1px;text-transform:uppercase;margin-left:auto;flex-shrink:0}
-.tmpl-tag.popular{color:var(--accent);background:rgba(99,255,180,0.1);border:1px solid rgba(99,255,180,0.2)}
-.tmpl-tag.new{color:var(--accent2);background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.2)}
-.tmpl-tag.hot{color:var(--accent3);background:rgba(255,107,157,0.1);border:1px solid rgba(255,107,157,0.2)}
-.tmpl-desc{font-size:10px;color:var(--muted);line-height:1.5;padding-left:39px}
-.tmpl-actions{display:flex;gap:5px;margin-top:8px;padding-left:39px}
-.tmpl-btn-use{font-size:9px;padding:3px 9px;border:1px solid rgba(99,255,180,0.3);border-radius:5px;background:transparent;color:var(--accent);cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.8px;transition:0.15s}
-.tmpl-btn-use:hover{background:rgba(99,255,180,0.08)}
-.tmpl-btn-gen{font-size:9px;padding:3px 9px;border:none;border-radius:5px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04060d;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:0.8px;transition:0.15s}
-.tmpl-btn-gen:hover{opacity:0.85;transform:translateY(-1px)}
-.tmpl-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -313,9 +304,9 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
       </div>
     </div>
 
-    <!-- TEMPLATE GALLERY PAGE -->
+    <!-- TEMPLATES PAGE -->
     <div class="panel-page" id="page-tmpl">
-      <div class="tmpl-page" id="tmplPage">
+      <div class="tmpl-page">
         <input class="tmpl-search" id="tmplSearch" placeholder="🔍 Search templates..." oninput="filterTemplates(this.value)"/>
         <div id="tmplGrid" class="tmpl-grid"></div>
         <div class="tmpl-empty" id="tmplEmpty" style="display:none">No templates found</div>
@@ -445,6 +436,14 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 <script>
+
+// ─────────────────────────────────────────────
+// CONFIG — change this to your backend URL if needed
+// e.g. 'https://your-app.railway.app'
+// Leave empty '' to use same domain (default)
+// ─────────────────────────────────────────────
+const API_BASE = '';
+
 // ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
@@ -452,8 +451,6 @@ let lastCode = '';
 let monacoMain = null, monacoSplit = null, monacoReady = false;
 let currentView = 'preview', currentDevice = 'desktop';
 let isGenerating = false;
-
-// PROJECT SYSTEM
 let projects = JSON.parse(localStorage.getItem('aib_projects') || '[]');
 let currentProjectId = localStorage.getItem('aib_current') || null;
 let versions = [];
@@ -465,114 +462,167 @@ let currentVersionIdx = -1;
 require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
 require(['vs/editor/editor.main'], function () {
   monacoReady = true;
-  const opts = { language:'html', theme:'vs-dark', fontFamily:"'JetBrains Mono',monospace", scrollBeyondLastLine:false, automaticLayout:true, minimap:{enabled:true}, padding:{top:10}, smoothScrolling:true, cursorBlinking:'smooth' };
-  monacoMain = monaco.editor.create(document.getElementById('monacoMain'), { ...opts, fontSize:12, value:'<!-- Generate a website to see code -->' });
+  const opts = {
+    language:'html', theme:'vs-dark', fontFamily:"'JetBrains Mono',monospace",
+    scrollBeyondLastLine:false, automaticLayout:true, minimap:{enabled:true},
+    padding:{top:10}, smoothScrolling:true, cursorBlinking:'smooth'
+  };
+  monacoMain  = monaco.editor.create(document.getElementById('monacoMain'),  { ...opts, fontSize:12, value:'<!-- Generate a website to see code -->' });
   monacoSplit = monaco.editor.create(document.getElementById('monacoSplit'), { ...opts, fontSize:11, minimap:{enabled:false}, value:'<!-- Generate a website to see code -->' });
 });
 
 // ─────────────────────────────────────────────
 // UI HELPERS
 // ─────────────────────────────────────────────
-function useChip(el){ const ta=document.getElementById('prompt'); ta.value=el.textContent; updateChar(ta); ta.focus(); }
-function updateChar(el){ document.getElementById('charCount').textContent=el.value.length; }
-function useSugg(el){ document.getElementById('chatInput').value=el.textContent; document.getElementById('chatInput').focus(); }
+function useChip(el) {
+  const ta = document.getElementById('prompt');
+  ta.value = el.textContent;
+  updateChar(ta);
+  ta.focus();
+}
+function updateChar(el) {
+  document.getElementById('charCount').textContent = el.value.length;
+}
+function useSugg(el) {
+  document.getElementById('chatInput').value = el.textContent;
+  document.getElementById('chatInput').focus();
+}
 
 function setStatus(type, msg) {
-  const dot=document.getElementById('sdot'), txt=document.getElementById('sdotTxt');
-  const sbar=document.getElementById('sbar'), smsg=document.getElementById('sbarMsg');
-  dot.className='sdot'; sbar.className='sbar';
-  const m={idle:{d:'idle',t:'idle',s:''},loading:{d:'working',t:'streaming',s:'ok'},editing:{d:'working',t:'editing',s:'warn'},done:{d:'done',t:'done',s:'ok'},error:{d:'err',t:'error',s:'bad'}};
-  const r=m[type]||m.idle;
-  dot.classList.add(r.d); txt.textContent=r.t;
-  if(r.s) sbar.classList.add(r.s);
-  smsg.textContent=msg;
+  const dot  = document.getElementById('sdot');
+  const txt  = document.getElementById('sdotTxt');
+  const sbar = document.getElementById('sbar');
+  const smsg = document.getElementById('sbarMsg');
+  dot.className = 'sdot';
+  sbar.className = 'sbar';
+  const m = {
+    idle:    { d:'idle',    t:'idle',      s:''    },
+    loading: { d:'working', t:'streaming', s:'ok'  },
+    editing: { d:'working', t:'editing',   s:'warn'},
+    done:    { d:'done',    t:'done',      s:'ok'  },
+    error:   { d:'err',     t:'error',     s:'bad' }
+  };
+  const r = m[type] || m.idle;
+  dot.classList.add(r.d);
+  txt.textContent = r.t;
+  if (r.s) sbar.classList.add(r.s);
+  smsg.textContent = msg;
 }
 
 function addChatMsg(role, text) {
-  const empty=document.getElementById('chatEmpty');
-  if(empty) empty.style.display='none';
-  const msgs=document.getElementById('chatMessages');
-  const now=new Date(); const t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  const div=document.createElement('div');
-  div.className='msg msg-'+role+(role==='ai'&&text===null?' typing':'');
-  div.innerHTML=`<div class="msg-bubble">${text||'Editing...'}</div><div class="msg-time">${t}</div>`;
+  const empty = document.getElementById('chatEmpty');
+  if (empty) empty.style.display = 'none';
+  const msgs = document.getElementById('chatMessages');
+  const now = new Date();
+  const t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  const div = document.createElement('div');
+  div.className = 'msg msg-' + role + (role === 'ai' && text === null ? ' typing' : '');
+  div.innerHTML = `<div class="msg-bubble">${text || 'Editing...'}</div><div class="msg-time">${t}</div>`;
   msgs.appendChild(div);
-  msgs.scrollTop=msgs.scrollHeight;
+  msgs.scrollTop = msgs.scrollHeight;
   return div;
 }
 
 // ─────────────────────────────────────────────
 // STREAMING HELPER
 // ─────────────────────────────────────────────
-async function streamRequest(url, body, onChunk, onDone, onError) {
+async function streamRequest(endpoint, body, onChunk, onDone, onError) {
   try {
-    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-    const reader=res.body.getReader(), decoder=new TextDecoder();
-    let buf='';
-    while(true) {
-      const {done,value}=await reader.read();
-      if(done) break;
-      buf+=decoder.decode(value,{stream:true});
-      const lines=buf.split('\n'); buf=lines.pop();
-      for(const line of lines) {
-        if(!line.startsWith('data: ')) continue;
+    const url = API_BASE + endpoint;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server error: ${res.status} ${res.statusText}`);
+    }
+
+    const reader  = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
         try {
-          const d=JSON.parse(line.slice(6));
-          if(d.type==='chunk') onChunk(d.content);
-          else if(d.type==='done') onDone(d.html);
-          else if(d.type==='error') onError(new Error(d.message));
-        } catch(e){}
+          const d = JSON.parse(line.slice(6));
+          if      (d.type === 'chunk') onChunk(d.content);
+          else if (d.type === 'done')  onDone(d.html);
+          else if (d.type === 'error') onError(new Error(d.message));
+        } catch(e) {}
       }
     }
-  } catch(err){ onError(err); }
+  } catch(err) {
+    onError(err);
+  }
 }
 
 // ─────────────────────────────────────────────
 // GENERATE
 // ─────────────────────────────────────────────
 async function generate() {
-  if(isGenerating) return;
-  const prompt=document.getElementById('prompt').value.trim();
-  if(!prompt){ setStatus('error','Enter a prompt first!'); return; }
+  if (isGenerating) return;
+  const prompt = document.getElementById('prompt').value.trim();
+  if (!prompt) { setStatus('error', 'Enter a prompt first!'); return; }
 
-  const btn=document.getElementById('genBtn'), btnTxt=document.getElementById('btnTxt');
-  const sovlay=document.getElementById('sovlay'), schars=document.getElementById('streamChars');
-  const emptyState=document.getElementById('emptyState');
+  const btn       = document.getElementById('genBtn');
+  const btnTxt    = document.getElementById('btnTxt');
+  const sovlay    = document.getElementById('sovlay');
+  const schars    = document.getElementById('streamChars');
+  const emptyState = document.getElementById('emptyState');
 
-  isGenerating=true; btn.classList.add('loading'); btn.disabled=true; btnTxt.textContent='Generating...';
-  sovlay.classList.add('show'); document.getElementById('sovlayTxt').textContent='Generating';
-  setStatus('loading','AI is building your website...');
+  isGenerating = true;
+  btn.classList.add('loading');
+  btn.disabled = true;
+  btnTxt.textContent = 'Generating...';
+  sovlay.classList.add('show');
+  document.getElementById('sovlayTxt').textContent = 'Generating';
+  setStatus('loading', 'AI is building your website...');
 
-  let accumulated='', updateTimer=null;
+  let accumulated = '';
+  let updateTimer = null;
 
-  await streamRequest('/generate', {prompt},
+  await streamRequest('/generate', { prompt },
     (chunk) => {
-      accumulated+=chunk;
-      schars.textContent=accumulated.length.toLocaleString()+' chars';
+      accumulated += chunk;
+      schars.textContent = accumulated.length.toLocaleString() + ' chars';
       clearTimeout(updateTimer);
-      updateTimer=setTimeout(()=>{
-        if(accumulated.includes('<body')) {
-          document.getElementById('mainFrame').srcdoc=accumulated;
-          if(currentView==='split') document.getElementById('splitFrame').srcdoc=accumulated;
+      updateTimer = setTimeout(() => {
+        if (accumulated.includes('<body')) {
+          document.getElementById('mainFrame').srcdoc = accumulated;
+          if (currentView === 'split') document.getElementById('splitFrame').srcdoc = accumulated;
           emptyState.classList.add('gone');
         }
       }, 60);
     },
     (html) => {
-      lastCode=html;
-      document.getElementById('mainFrame').srcdoc=html;
-      document.getElementById('splitFrame').srcdoc=html;
+      lastCode = html;
+      document.getElementById('mainFrame').srcdoc  = html;
+      document.getElementById('splitFrame').srcdoc = html;
       emptyState.classList.add('gone');
-      if(monacoReady){ monacoMain.setValue(html); monacoSplit.setValue(html); }
-      setStatus('done',`Done! ${html.length.toLocaleString()} chars`);
+      if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
+      setStatus('done', `Done! ${html.length.toLocaleString()} chars`);
       addVersion('generate', prompt, html);
       saveCurrentProject(prompt, html);
-      isGenerating=false; btn.classList.remove('loading'); btn.disabled=false; btnTxt.textContent='Generate Website';
+      isGenerating = false;
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      btnTxt.textContent = 'Generate Website';
       sovlay.classList.remove('show');
     },
     (err) => {
-      setStatus('error', err.message||'Generation failed');
-      isGenerating=false; btn.classList.remove('loading'); btn.disabled=false; btnTxt.textContent='Generate Website';
+      setStatus('error', err.message || 'Generation failed');
+      isGenerating = false;
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      btnTxt.textContent = 'Generate Website';
       sovlay.classList.remove('show');
     }
   );
@@ -581,277 +631,129 @@ async function generate() {
 // ─────────────────────────────────────────────
 // CHAT EDIT
 // ─────────────────────────────────────────────
-function chatKeydown(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendEdit(); } }
+function chatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendEdit(); }
+}
 
 async function sendEdit() {
-  if(isGenerating) return;
-  if(!lastCode){ setStatus('error','Generate a website first!'); showPanelPage('gen',document.querySelectorAll('.ptab')[0]); return; }
-  const input=document.getElementById('chatInput'), instruction=input.value.trim();
-  if(!instruction) return;
+  if (isGenerating) return;
+  if (!lastCode) {
+    setStatus('error', 'Generate a website first!');
+    showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
+    return;
+  }
+  const input       = document.getElementById('chatInput');
+  const instruction = input.value.trim();
+  if (!instruction) return;
 
-  input.value='';
+  input.value = '';
   addChatMsg('user', instruction);
-  const aiMsgEl=addChatMsg('ai', null);
+  const aiMsgEl = addChatMsg('ai', null);
 
-  const btn=document.getElementById('chatSendBtn');
-  const sovlay=document.getElementById('sovlay'), schars=document.getElementById('streamChars');
-  isGenerating=true; btn.disabled=true;
-  sovlay.classList.add('show'); document.getElementById('sovlayTxt').textContent='Editing';
-  setStatus('editing','Applying edit...');
+  const btn    = document.getElementById('chatSendBtn');
+  const sovlay = document.getElementById('sovlay');
+  const schars = document.getElementById('streamChars');
 
-  let accumulated='', updateTimer=null;
+  isGenerating = true;
+  btn.disabled = true;
+  sovlay.classList.add('show');
+  document.getElementById('sovlayTxt').textContent = 'Editing';
+  setStatus('editing', 'Applying edit...');
 
-  await streamRequest('/edit', {html:lastCode, instruction},
+  let accumulated = '';
+  let updateTimer = null;
+
+  await streamRequest('/edit', { html: lastCode, instruction },
     (chunk) => {
-      accumulated+=chunk;
-      schars.textContent=accumulated.length.toLocaleString()+' chars';
+      accumulated += chunk;
+      schars.textContent = accumulated.length.toLocaleString() + ' chars';
       clearTimeout(updateTimer);
-      updateTimer=setTimeout(()=>{
-        if(accumulated.includes('<body')) {
-          document.getElementById('mainFrame').srcdoc=accumulated;
-          if(currentView==='split') document.getElementById('splitFrame').srcdoc=accumulated;
+      updateTimer = setTimeout(() => {
+        if (accumulated.includes('<body')) {
+          document.getElementById('mainFrame').srcdoc = accumulated;
+          if (currentView === 'split') document.getElementById('splitFrame').srcdoc = accumulated;
         }
       }, 60);
     },
     (html) => {
-      lastCode=html;
-      document.getElementById('mainFrame').srcdoc=html;
-      document.getElementById('splitFrame').srcdoc=html;
-      if(monacoReady){ monacoMain.setValue(html); monacoSplit.setValue(html); }
+      lastCode = html;
+      document.getElementById('mainFrame').srcdoc  = html;
+      document.getElementById('splitFrame').srcdoc = html;
+      if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
       aiMsgEl.classList.remove('typing');
-      aiMsgEl.querySelector('.msg-bubble').textContent='✓ Done! '+instruction;
-      setStatus('done','Edit applied!');
+      aiMsgEl.querySelector('.msg-bubble').textContent = '✓ Done! ' + instruction;
+      setStatus('done', 'Edit applied!');
       addVersion('edit', instruction, html);
       saveCurrentProject(null, html);
-      isGenerating=false; btn.disabled=false; sovlay.classList.remove('show');
+      isGenerating = false;
+      btn.disabled = false;
+      sovlay.classList.remove('show');
     },
     (err) => {
       aiMsgEl.classList.remove('typing');
-      aiMsgEl.querySelector('.msg-bubble').textContent='❌ '+( err.message||'Edit failed');
-      setStatus('error', err.message||'Edit failed');
-      isGenerating=false; btn.disabled=false; sovlay.classList.remove('show');
+      aiMsgEl.querySelector('.msg-bubble').textContent = '❌ ' + (err.message || 'Edit failed');
+      setStatus('error', err.message || 'Edit failed');
+      isGenerating = false;
+      btn.disabled = false;
+      sovlay.classList.remove('show');
     }
   );
 }
 
 // ─────────────────────────────────────────────
-// VERSION HISTORY
-// ─────────────────────────────────────────────
-function addVersion(type, prompt, html) {
-  const ver={ id:Date.now(), type, prompt, html, time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) };
-  versions.unshift(ver);
-  currentVersionIdx=0;
-  renderVersions();
-}
-
-function renderVersions() {
-  const list=document.getElementById('verList'), empty=document.getElementById('verEmpty');
-  if(versions.length===0){ empty.style.display='block'; return; }
-  empty.style.display='none';
-  // Clear old cards (keep empty div)
-  Array.from(list.children).forEach(c=>{ if(!c.classList.contains('ver-empty')) c.remove(); });
-  versions.forEach((v,i)=>{
-    const card=document.createElement('div');
-    card.className='ver-card'+(i===currentVersionIdx?' current-ver':'');
-    card.innerHTML=`
-      <div class="ver-head">
-        <span class="ver-num">v${versions.length-i}</span>
-        <span class="ver-type ${v.type}">${v.type==='generate'?'Generate':'Edit'}</span>
-        <span class="ver-time">${v.time}</span>
-      </div>
-      <div class="ver-prompt">${v.prompt.substring(0,50)}${v.prompt.length>50?'…':''}</div>
-      <button class="ver-restore-btn" onclick="restoreVersion(${i})">↩ Restore this version</button>
-    `;
-    list.insertBefore(card, list.querySelector('.ver-empty'));
-  });
-}
-
-function restoreVersion(idx) {
-  const ver=versions[idx];
-  if(!ver) return;
-  lastCode=ver.html;
-  currentVersionIdx=idx;
-  document.getElementById('mainFrame').srcdoc=lastCode;
-  document.getElementById('splitFrame').srcdoc=lastCode;
-  if(monacoReady){ monacoMain.setValue(lastCode); monacoSplit.setValue(lastCode); }
-  document.getElementById('emptyState').classList.add('gone');
-  setStatus('done',`Restored to v${versions.length-idx}`);
-  renderVersions();
-}
-
-// ─────────────────────────────────────────────
-// PROJECT SYSTEM
-// ─────────────────────────────────────────────
-function saveProjects(){ localStorage.setItem('aib_projects', JSON.stringify(projects)); }
-function saveCurrentProject(prompt, html) {
-  if(!currentProjectId) {
-    // Auto-create project
-    const id='proj_'+Date.now();
-    const name=prompt ? prompt.substring(0,30)+(prompt.length>30?'…':'') : 'Untitled Project';
-    projects.unshift({ id, name, html, prompt:prompt||'', versions:versions.length, updated:new Date().toLocaleString() });
-    currentProjectId=id;
-    localStorage.setItem('aib_current', id);
-    document.getElementById('projNameDisplay').textContent=name;
-  } else {
-    const p=projects.find(p=>p.id===currentProjectId);
-    if(p){ p.html=html; p.versions=versions.length; p.updated=new Date().toLocaleString(); }
-  }
-  saveProjects();
-  renderProjects();
-}
-
-function renderProjects() {
-  const list=document.getElementById('projList'), empty=document.getElementById('projEmpty');
-  // Remove existing proj cards
-  Array.from(list.children).forEach(c=>{ if(c.classList.contains('proj-card')) c.remove(); });
-  if(projects.length===0){ empty.style.display='block'; return; }
-  empty.style.display='none';
-  projects.forEach(p=>{
-    const card=document.createElement('div');
-    card.className='proj-card'+(p.id===currentProjectId?' current':'');
-    card.innerHTML=`
-      <div class="proj-card-name">${p.name}</div>
-      <div class="proj-card-meta"><span>${p.versions||0} versions</span><span>${p.updated||''}</span></div>
-      <button class="proj-card-del" onclick="deleteProject(event,'${p.id}')">✕</button>
-    `;
-    card.onclick=(e)=>{ if(!e.target.classList.contains('proj-card-del')) loadProject(p.id); };
-    list.insertBefore(card, empty);
-  });
-}
-
-function loadProject(id) {
-  const p=projects.find(p=>p.id===id);
-  if(!p||!p.html) return;
-  currentProjectId=id;
-  localStorage.setItem('aib_current', id);
-  lastCode=p.html;
-  versions=[];
-  document.getElementById('mainFrame').srcdoc=lastCode;
-  document.getElementById('splitFrame').srcdoc=lastCode;
-  if(monacoReady){ monacoMain.setValue(lastCode); monacoSplit.setValue(lastCode); }
-  document.getElementById('emptyState').classList.add('gone');
-  document.getElementById('projNameDisplay').textContent=p.name;
-  addVersion('generate', p.prompt||p.name, p.html);
-  setStatus('done','Project loaded: '+p.name);
-  renderProjects();
-}
-
-function deleteProject(e, id) {
-  e.stopPropagation();
-  projects=projects.filter(p=>p.id!==id);
-  if(currentProjectId===id){ currentProjectId=null; localStorage.removeItem('aib_current'); }
-  saveProjects();
-  renderProjects();
-}
-
-function createNewProject() {
-  currentProjectId=null;
-  localStorage.removeItem('aib_current');
-  lastCode=''; versions=[]; currentVersionIdx=-1;
-  document.getElementById('mainFrame').srcdoc='';
-  document.getElementById('splitFrame').srcdoc='';
-  document.getElementById('emptyState').classList.remove('gone');
-  document.getElementById('projNameDisplay').textContent='Untitled Project';
-  if(monacoReady){ monacoMain.setValue('<!-- New project -->'); monacoSplit.setValue('<!-- New project -->'); }
-  setStatus('idle','New project created');
-  renderProjects();
-  showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
-}
-
-// PROJECT NAME MODAL
-function showProjModal(){ document.getElementById('projNameInput').value=document.getElementById('projNameDisplay').textContent; document.getElementById('projModal').classList.add('show'); document.getElementById('projNameInput').focus(); }
-function closeProjModal(){ document.getElementById('projModal').classList.remove('show'); }
-function saveProjName(){
-  const name=document.getElementById('projNameInput').value.trim()||'Untitled Project';
-  document.getElementById('projNameDisplay').textContent=name;
-  if(currentProjectId){ const p=projects.find(p=>p.id===currentProjectId); if(p) p.name=name; saveProjects(); renderProjects(); }
-  closeProjModal();
-}
-document.getElementById('projModal').addEventListener('click',e=>{ if(e.target===document.getElementById('projModal')) closeProjModal(); });
-document.getElementById('projNameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') saveProjName(); });
-
-// ─────────────────────────────────────────────
 // TEMPLATE GALLERY
 // ─────────────────────────────────────────────
 const TEMPLATES = [
-  {
-    icon:'🚀', name:'SaaS Landing', tag:'popular',
-    desc:'Dark, animated SaaS product page with pricing, features & testimonials.',
-    prompt:'A dark SaaS landing page for an AI-powered project management tool called "FlowAI". Use deep navy background, electric blue accents, glassmorphism cards, animated stats showing 50K users, 99.9% uptime, 10x faster. Include features section, 3-tier pricing, and testimonials.'
-  },
-  {
-    icon:'🤖', name:'AI Startup', tag:'hot',
+  { icon:'🚀', name:'SaaS Landing', tag:'popular',
+    desc:'Dark animated SaaS product page with pricing, features & testimonials.',
+    prompt:'A dark SaaS landing page for an AI-powered project management tool called "FlowAI". Use deep navy background, electric blue accents, glassmorphism cards, animated stats showing 50K users, 99.9% uptime, 10x faster. Include features section, 3-tier pricing, and testimonials.' },
+  { icon:'🤖', name:'AI Startup', tag:'hot',
     desc:'Futuristic AI company website with glowing orbs and neural network vibes.',
-    prompt:'A futuristic AI startup landing page for "NeuralForge" — a company building next-gen AI models. Use pitch black background with electric purple and cyan accents. Show capabilities like image generation, NLP, and code synthesis. Add glowing orbs, particle effects, floating cards.'
-  },
-  {
-    icon:'🎨', name:'Creative Portfolio', tag:'popular',
-    desc:'Minimal, elegant portfolio for designers and developers.',
-    prompt:'A stunning minimal portfolio website for a senior UI/UX designer named Alex Chen. Use off-white background with bold black typography and a single yellow accent. Show case studies as large full-width cards. Include about, skills, selected work, and contact sections.'
-  },
-  {
-    icon:'🛍️', name:'E-commerce', tag:'new',
+    prompt:'A futuristic AI startup landing page for "NeuralForge" — a company building next-gen AI models. Use pitch black background with electric purple and cyan accents. Show capabilities like image generation, NLP, and code synthesis. Add glowing orbs, particle effects, floating cards.' },
+  { icon:'🎨', name:'Creative Portfolio', tag:'popular',
+    desc:'Minimal elegant portfolio for designers and developers.',
+    prompt:'A stunning minimal portfolio website for a senior UI/UX designer named Alex Chen. Use off-white background with bold black typography and a single yellow accent. Show case studies as large full-width cards. Include about, skills, selected work, and contact sections.' },
+  { icon:'🛍️', name:'E-commerce', tag:'new',
     desc:'Premium online store with product showcases and cart flow.',
-    prompt:'A premium e-commerce landing page for a luxury streetwear brand called "VOID" — minimalist dark design, white text, red accents. Show featured drops, new arrivals grid, brand story. Include size guide, testimonials, and newsletter signup. Edgy, high-fashion aesthetic.'
-  },
-  {
-    icon:'🍕', name:'Restaurant', tag:'',
+    prompt:'A premium e-commerce landing page for a luxury streetwear brand called "VOID" — minimalist dark design, white text, red accents. Show featured drops, new arrivals grid, brand story. Include size guide, testimonials, and newsletter signup. Edgy high-fashion aesthetic.' },
+  { icon:'🍕', name:'Restaurant', tag:'',
     desc:'Elegant restaurant website with menu and reservation flow.',
-    prompt:'An upscale restaurant website for "Ember & Oak" — a modern steakhouse. Warm dark brown background, golden amber accents, beautiful food photography from Unsplash. Include hero with reservation CTA, menu sections, chef story, gallery, and contact with location.'
-  },
-  {
-    icon:'💼', name:'Agency', tag:'popular',
+    prompt:'An upscale restaurant website for "Ember & Oak" — a modern steakhouse. Warm dark brown background, golden amber accents, beautiful food photography. Include hero with reservation CTA, menu sections, chef story, gallery, and contact with location.' },
+  { icon:'💼', name:'Agency', tag:'popular',
     desc:'Bold creative agency site with case studies and services.',
-    prompt:'A bold creative agency website for "APEX Studio" — a branding and digital agency. Use deep black with vivid gradient accents (purple to orange). Showcase services: branding, web design, motion. Add client logos, case study cards, team section, and a "Start a project" CTA.'
-  },
-  {
-    icon:'📱', name:'Mobile App', tag:'hot',
+    prompt:'A bold creative agency website for "APEX Studio" — a branding and digital agency. Use deep black with vivid gradient accents purple to orange. Showcase services: branding, web design, motion. Add client logos, case study cards, team section, and a Start a project CTA.' },
+  { icon:'📱', name:'Mobile App', tag:'hot',
     desc:'App landing page with device mockups and download CTAs.',
-    prompt:'A slick mobile app landing page for "Pulse" — a habit tracking app. Use dark background with vibrant green accents. Show app screenshots in phone mockups, feature list with icons, how it works in 3 steps, user reviews, and App Store / Google Play download buttons.'
-  },
-  {
-    icon:'💎', name:'Crypto / Web3', tag:'new',
+    prompt:'A slick mobile app landing page for "Pulse" — a habit tracking app. Use dark background with vibrant green accents. Show app screenshots in phone mockups, feature list with icons, how it works in 3 steps, user reviews, and App Store Google Play download buttons.' },
+  { icon:'💎', name:'Crypto / Web3', tag:'new',
     desc:'NFT or crypto project with wallet connect and tokenomics.',
-    prompt:'A Web3 NFT collection landing page for "GENESIS" — 10,000 unique digital entities. Use pitch black with neon green and electric blue accents. Show collection preview grid, mint countdown timer, tokenomics chart, roadmap, team section, and FAQ. Add glitch effects and matrix-style animations.'
-  },
-  {
-    icon:'🏋️', name:'Fitness / Health', tag:'',
+    prompt:'A Web3 NFT collection landing page for "GENESIS" — 10000 unique digital entities. Use pitch black with neon green and electric blue accents. Show collection preview grid, mint countdown timer, tokenomics chart, roadmap, team section, and FAQ. Add glitch effects.' },
+  { icon:'🏋️', name:'Fitness / Health', tag:'',
     desc:'Energetic gym or wellness brand with transformation stories.',
-    prompt:'A high-energy fitness brand website for "IRON CULT" — an elite gym chain. Use dark charcoal background with bold red and white accents. Show transformation before/after stories, class schedule, membership pricing tiers, trainer profiles, and a free trial signup CTA.'
-  },
-  {
-    icon:'🎮', name:'Gaming / Esports', tag:'hot',
+    prompt:'A high-energy fitness brand website for "IRON CULT" — an elite gym chain. Use dark charcoal background with bold red and white accents. Show transformation before/after stories, class schedule, membership pricing tiers, trainer profiles, and a free trial signup CTA.' },
+  { icon:'🎮', name:'Gaming / Esports', tag:'hot',
     desc:'Intense gaming or esports team website with live stats.',
-    prompt:'An esports team website for "PHANTOM FIVE" — a professional CS2 squad. Use dark background with electric cyan and purple accents. Include player cards with stats, tournament history, match schedule, sponsors section, fan shop, and a team recruitment form. Add particle effects and intense typography.'
-  },
-  {
-    icon:'🏠', name:'Real Estate', tag:'',
+    prompt:'An esports team website for "PHANTOM FIVE" — a professional CS2 squad. Use dark background with electric cyan and purple accents. Include player cards with stats, tournament history, match schedule, sponsors section, fan shop, and a team recruitment form.' },
+  { icon:'🏠', name:'Real Estate', tag:'',
     desc:'Luxury property listings with virtual tours and agent contact.',
-    prompt:'A luxury real estate agency website for "Pinnacle Properties". Use elegant dark navy background with gold accents. Show featured property listings as large cards with price tags, neighborhood map, agent profiles, testimonials from buyers, property search widget, and "Schedule Viewing" CTA.'
-  },
-  {
-    icon:'🎵', name:'Music / Artist', tag:'new',
+    prompt:'A luxury real estate agency website for "Pinnacle Properties". Use elegant dark navy background with gold accents. Show featured property listings as large cards with price tags, neighborhood map, agent profiles, testimonials from buyers, and Schedule Viewing CTA.' },
+  { icon:'🎵', name:'Music / Artist', tag:'new',
     desc:'Artist or band website with discography and tour dates.',
-    prompt:'A music artist website for "NOVA" — a synthwave electronic artist. Use dark background with neon pink and purple gradients. Show latest album with tracklist, upcoming tour dates table, music video embed section, merchandise store preview, press quotes, and newsletter signup.'
-  },
-  {
-    icon:'📊', name:'Finance / Fintech', tag:'',
+    prompt:'A music artist website for "NOVA" — a synthwave electronic artist. Use dark background with neon pink and purple gradients. Show latest album with tracklist, upcoming tour dates, music video section, merchandise store preview, press quotes, and newsletter signup.' },
+  { icon:'📊', name:'Finance / Fintech', tag:'',
     desc:'Clean fintech dashboard landing with trust signals and features.',
-    prompt:'A fintech app landing page for "Vault" — a smart personal finance platform. Use dark slate background with emerald green accents. Show live portfolio graph mockup, features like AI spending insights, auto-investing, bill tracking. Add security badges, bank logos, and 3-tier pricing.'
-  },
-  {
-    icon:'🎓', name:'EdTech / Course', tag:'popular',
+    prompt:'A fintech app landing page for "Vault" — a smart personal finance platform. Use dark slate background with emerald green accents. Show live portfolio graph mockup, features like AI spending insights, auto-investing, bill tracking. Add security badges and 3-tier pricing.' },
+  { icon:'🎓', name:'EdTech / Course', tag:'popular',
     desc:'Online learning platform with course previews and instructor profiles.',
-    prompt:'An online learning platform landing page for "SkillForge" — tech courses for developers. Use dark background with vivid orange and yellow accents. Show featured courses as cards, learning path visualization, instructor profiles, student testimonials with progress stats, and enrollment CTA.'
-  },
+    prompt:'An online learning platform landing page for "SkillForge" — tech courses for developers. Use dark background with vivid orange and yellow accents. Show featured courses as cards, learning path visualization, instructor profiles, student testimonials, and enrollment CTA.' },
 ];
 
 function renderTemplates(list) {
-  const grid = document.getElementById('tmplGrid');
+  const grid  = document.getElementById('tmplGrid');
   const empty = document.getElementById('tmplEmpty');
   grid.innerHTML = '';
-  if(list.length === 0){ empty.style.display='block'; return; }
-  empty.style.display='none';
+  if (list.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
   list.forEach((t, i) => {
     const card = document.createElement('div');
     card.className = 'tmpl-card';
@@ -865,8 +767,7 @@ function renderTemplates(list) {
       <div class="tmpl-actions">
         <button class="tmpl-btn-use" onclick="useTemplate(${i})">Use Prompt</button>
         <button class="tmpl-btn-gen" onclick="instantGenerate(${i})">⚡ Generate Now</button>
-      </div>
-    `;
+      </div>`;
     grid.appendChild(card);
   });
 }
@@ -891,92 +792,270 @@ function instantGenerate(i) {
   document.getElementById('prompt').value = t.prompt;
   updateChar(document.getElementById('prompt'));
   showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
-  setTimeout(() => generate(), 100);
+  setTimeout(() => generate(), 150);
 }
 
-// Initialize templates on load
-document.addEventListener('DOMContentLoaded', () => renderTemplates(TEMPLATES));
+// ─────────────────────────────────────────────
+// VERSION HISTORY
+// ─────────────────────────────────────────────
+function addVersion(type, prompt, html) {
+  const ver = {
+    id: Date.now(), type, prompt, html,
+    time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })
+  };
+  versions.unshift(ver);
+  currentVersionIdx = 0;
+  renderVersions();
+}
+
+function renderVersions() {
+  const list  = document.getElementById('verList');
+  const empty = document.getElementById('verEmpty');
+  if (versions.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  Array.from(list.children).forEach(c => { if (!c.classList.contains('ver-empty')) c.remove(); });
+  versions.forEach((v, i) => {
+    const card = document.createElement('div');
+    card.className = 'ver-card' + (i === currentVersionIdx ? ' current-ver' : '');
+    card.innerHTML = `
+      <div class="ver-head">
+        <span class="ver-num">v${versions.length - i}</span>
+        <span class="ver-type ${v.type}">${v.type === 'generate' ? 'Generate' : 'Edit'}</span>
+        <span class="ver-time">${v.time}</span>
+      </div>
+      <div class="ver-prompt">${v.prompt.substring(0,50)}${v.prompt.length > 50 ? '…' : ''}</div>
+      <button class="ver-restore-btn" onclick="restoreVersion(${i})">↩ Restore this version</button>`;
+    list.insertBefore(card, list.querySelector('.ver-empty'));
+  });
+}
+
+function restoreVersion(idx) {
+  const ver = versions[idx];
+  if (!ver) return;
+  lastCode = ver.html;
+  currentVersionIdx = idx;
+  document.getElementById('mainFrame').srcdoc  = lastCode;
+  document.getElementById('splitFrame').srcdoc = lastCode;
+  if (monacoReady) { monacoMain.setValue(lastCode); monacoSplit.setValue(lastCode); }
+  document.getElementById('emptyState').classList.add('gone');
+  setStatus('done', `Restored to v${versions.length - idx}`);
+  renderVersions();
+}
+
+// ─────────────────────────────────────────────
+// PROJECT SYSTEM
+// ─────────────────────────────────────────────
+function saveProjects() { localStorage.setItem('aib_projects', JSON.stringify(projects)); }
+
+function saveCurrentProject(prompt, html) {
+  if (!currentProjectId) {
+    const id   = 'proj_' + Date.now();
+    const name = prompt ? prompt.substring(0,30) + (prompt.length > 30 ? '…' : '') : 'Untitled Project';
+    projects.unshift({ id, name, html, prompt: prompt || '', versions: versions.length, updated: new Date().toLocaleString() });
+    currentProjectId = id;
+    localStorage.setItem('aib_current', id);
+    document.getElementById('projNameDisplay').textContent = name;
+  } else {
+    const p = projects.find(p => p.id === currentProjectId);
+    if (p) { p.html = html; p.versions = versions.length; p.updated = new Date().toLocaleString(); }
+  }
+  saveProjects();
+  renderProjects();
+}
+
+function renderProjects() {
+  const list  = document.getElementById('projList');
+  const empty = document.getElementById('projEmpty');
+  Array.from(list.children).forEach(c => { if (c.classList.contains('proj-card')) c.remove(); });
+  if (projects.length === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  projects.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'proj-card' + (p.id === currentProjectId ? ' current' : '');
+    card.innerHTML = `
+      <div class="proj-card-name">${p.name}</div>
+      <div class="proj-card-meta"><span>${p.versions || 0} versions</span><span>${p.updated || ''}</span></div>
+      <button class="proj-card-del" onclick="deleteProject(event,'${p.id}')">✕</button>`;
+    card.onclick = (e) => { if (!e.target.classList.contains('proj-card-del')) loadProject(p.id); };
+    list.insertBefore(card, empty);
+  });
+}
+
+function loadProject(id) {
+  const p = projects.find(p => p.id === id);
+  if (!p || !p.html) return;
+  currentProjectId = id;
+  localStorage.setItem('aib_current', id);
+  lastCode = p.html;
+  versions = [];
+  document.getElementById('mainFrame').srcdoc  = lastCode;
+  document.getElementById('splitFrame').srcdoc = lastCode;
+  if (monacoReady) { monacoMain.setValue(lastCode); monacoSplit.setValue(lastCode); }
+  document.getElementById('emptyState').classList.add('gone');
+  document.getElementById('projNameDisplay').textContent = p.name;
+  addVersion('generate', p.prompt || p.name, p.html);
+  setStatus('done', 'Project loaded: ' + p.name);
+  renderProjects();
+}
+
+function deleteProject(e, id) {
+  e.stopPropagation();
+  projects = projects.filter(p => p.id !== id);
+  if (currentProjectId === id) { currentProjectId = null; localStorage.removeItem('aib_current'); }
+  saveProjects();
+  renderProjects();
+}
+
+function createNewProject() {
+  currentProjectId = null;
+  localStorage.removeItem('aib_current');
+  lastCode = ''; versions = []; currentVersionIdx = -1;
+  document.getElementById('mainFrame').srcdoc  = '';
+  document.getElementById('splitFrame').srcdoc = '';
+  document.getElementById('emptyState').classList.remove('gone');
+  document.getElementById('projNameDisplay').textContent = 'Untitled Project';
+  if (monacoReady) { monacoMain.setValue('<!-- New project -->'); monacoSplit.setValue('<!-- New project -->'); }
+  setStatus('idle', 'New project created');
+  renderProjects();
+  showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
+}
+
+// PROJECT NAME MODAL
+function showProjModal() {
+  document.getElementById('projNameInput').value = document.getElementById('projNameDisplay').textContent;
+  document.getElementById('projModal').classList.add('show');
+  document.getElementById('projNameInput').focus();
+}
+function closeProjModal() { document.getElementById('projModal').classList.remove('show'); }
+function saveProjName() {
+  const name = document.getElementById('projNameInput').value.trim() || 'Untitled Project';
+  document.getElementById('projNameDisplay').textContent = name;
+  if (currentProjectId) {
+    const p = projects.find(p => p.id === currentProjectId);
+    if (p) p.name = name;
+    saveProjects();
+    renderProjects();
+  }
+  closeProjModal();
+}
+document.getElementById('projModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('projModal')) closeProjModal();
+});
+document.getElementById('projNameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') saveProjName();
+});
 
 // ─────────────────────────────────────────────
 // PANEL TABS
 // ─────────────────────────────────────────────
 function showPanelPage(name, btn) {
-  document.querySelectorAll('.panel-page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  if(btn) btn.classList.add('active');
-  else { const tabs={gen:0,tmpl:1,chat:2,proj:3,ver:4}; document.querySelectorAll('.ptab')[tabs[name]||0].classList.add('active'); }
+  document.querySelectorAll('.panel-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const tabs = { gen:0, tmpl:1, chat:2, proj:3, ver:4 };
+    document.querySelectorAll('.ptab')[tabs[name] || 0].classList.add('active');
+  }
 }
 
 // ─────────────────────────────────────────────
 // VIEW & DEVICE
 // ─────────────────────────────────────────────
-function setView(v){
-  currentView=v;
-  const pp=document.getElementById('previewPanel'), ep=document.getElementById('editorPanel'), sp=document.getElementById('splitPanel');
-  const sw=document.getElementById('sizeWrap');
-  pp.style.display='none'; ep.style.display='none'; ep.classList.remove('vis'); sp.style.display='none'; sp.classList.remove('vis');
-  document.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('vtab-'+v).classList.add('active');
-  if(v==='preview'){ pp.style.display='flex'; sw.style.display='flex'; }
-  else if(v==='editor'){ ep.style.display='flex'; ep.classList.add('vis'); sw.style.display='none'; if(monacoReady) setTimeout(()=>monacoMain.layout(),50); }
-  else if(v==='split'){ sp.style.display='flex'; sp.classList.add('vis'); sw.style.display='none'; if(lastCode) document.getElementById('splitFrame').srcdoc=lastCode; setTimeout(()=>{ if(monacoReady) monacoSplit.layout(); },50); }
+function setView(v) {
+  currentView = v;
+  const pp = document.getElementById('previewPanel');
+  const ep = document.getElementById('editorPanel');
+  const sp = document.getElementById('splitPanel');
+  const sw = document.getElementById('sizeWrap');
+  pp.style.display = 'none';
+  ep.style.display = 'none'; ep.classList.remove('vis');
+  sp.style.display = 'none'; sp.classList.remove('vis');
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  document.getElementById('vtab-' + v).classList.add('active');
+  if      (v === 'preview') { pp.style.display = 'flex'; sw.style.display = 'flex'; }
+  else if (v === 'editor')  { ep.style.display = 'flex'; ep.classList.add('vis'); sw.style.display = 'none'; if (monacoReady) setTimeout(() => monacoMain.layout(), 50); }
+  else if (v === 'split')   { sp.style.display = 'flex'; sp.classList.add('vis');  sw.style.display = 'none'; if (lastCode) document.getElementById('splitFrame').srcdoc = lastCode; setTimeout(() => { if (monacoReady) monacoSplit.layout(); }, 50); }
 }
 
-function setDevice(d){
-  currentDevice=d;
-  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('dev-'+d).classList.add('active');
-  const df=document.getElementById('devFrame'), pp=document.getElementById('previewPanel');
-  df.className='dev-frame '+d; pp.className='preview-panel';
-  if(d==='mobile'||d==='tablet') pp.classList.add(d+'-view');
+function setDevice(d) {
+  currentDevice = d;
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  document.getElementById('dev-' + d).classList.add('active');
+  const df = document.getElementById('devFrame');
+  const pp = document.getElementById('previewPanel');
+  df.className = 'dev-frame ' + d;
+  pp.className = 'preview-panel';
+  if (d === 'mobile' || d === 'tablet') pp.classList.add(d + '-view');
 }
 
 // ─────────────────────────────────────────────
 // EDITOR ACTIONS
 // ─────────────────────────────────────────────
-function applyEditor(){ if(!monacoReady||!monacoMain) return; lastCode=monacoMain.getValue(); document.getElementById('mainFrame').srcdoc=lastCode; setStatus('done','Applied!'); setView('preview'); }
-function formatEditor(){ if(monacoReady&&monacoMain) monacoMain.getAction('editor.action.formatDocument').run(); }
-function applySplit(){ if(!monacoReady||!monacoSplit) return; lastCode=monacoSplit.getValue(); document.getElementById('splitFrame').srcdoc=lastCode; monacoMain.setValue(lastCode); setStatus('done','Applied!'); }
+function applyEditor()  { if (!monacoReady || !monacoMain)  return; lastCode = monacoMain.getValue();  document.getElementById('mainFrame').srcdoc = lastCode; setStatus('done','Applied!'); setView('preview'); }
+function formatEditor() { if (monacoReady && monacoMain) monacoMain.getAction('editor.action.formatDocument').run(); }
+function applySplit()   { if (!monacoReady || !monacoSplit) return; lastCode = monacoSplit.getValue(); document.getElementById('splitFrame').srcdoc = lastCode; monacoMain.setValue(lastCode); setStatus('done','Applied!'); }
 
 // ─────────────────────────────────────────────
 // EXPORT
 // ─────────────────────────────────────────────
-function copyCode(){ if(!lastCode){ setStatus('error','Nothing to copy'); return; } navigator.clipboard.writeText(lastCode).then(()=>setStatus('done','Copied!')); }
-function exportCode(){ if(!lastCode){ setStatus('error','Generate first'); return; } const b=new Blob([lastCode],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='ai-generated-site.html'; a.click(); setStatus('done','Downloaded!'); }
-function openInTab(){ if(!lastCode){ setStatus('error','Generate first'); return; } const b=new Blob([lastCode],{type:'text/html'}); window.open(URL.createObjectURL(b),'_blank'); }
+function copyCode()   { if (!lastCode) { setStatus('error','Nothing to copy'); return; } navigator.clipboard.writeText(lastCode).then(() => setStatus('done','Copied!')); }
+function exportCode() { if (!lastCode) { setStatus('error','Generate first'); return; } const b = new Blob([lastCode],{type:'text/html'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'ai-generated-site.html'; a.click(); setStatus('done','Downloaded!'); }
+function openInTab()  { if (!lastCode) { setStatus('error','Generate first'); return; } const b = new Blob([lastCode],{type:'text/html'}); window.open(URL.createObjectURL(b),'_blank'); }
 
 // ─────────────────────────────────────────────
 // RESIZE HANDLE
 // ─────────────────────────────────────────────
-let isResizing=false;
-const rh=document.getElementById('rhandle');
-rh.addEventListener('mousedown',()=>{ isResizing=true; rh.classList.add('dragging'); document.body.style.cursor='col-resize'; document.body.style.userSelect='none'; });
-document.addEventListener('mousemove',e=>{ if(!isResizing) return; const sp=document.getElementById('splitPanel'); const rect=sp.getBoundingClientRect(); const pct=Math.max(25,Math.min(75,((e.clientX-rect.left)/rect.width)*100)); document.getElementById('splitPrev').style.cssText='flex:none;width:'+pct+'%'; document.getElementById('splitPanel').querySelector('.split-ed').style.flex='1'; if(monacoSplit) monacoSplit.layout(); });
-document.addEventListener('mouseup',()=>{ if(isResizing){ isResizing=false; rh.classList.remove('dragging'); document.body.style.cursor=''; document.body.style.userSelect=''; } });
+let isResizing = false;
+const rh = document.getElementById('rhandle');
+rh.addEventListener('mousedown', () => {
+  isResizing = true;
+  rh.classList.add('dragging');
+  document.body.style.cursor = 'col-resize';
+  document.body.style.userSelect = 'none';
+});
+document.addEventListener('mousemove', e => {
+  if (!isResizing) return;
+  const sp   = document.getElementById('splitPanel');
+  const rect = sp.getBoundingClientRect();
+  const pct  = Math.max(25, Math.min(75, ((e.clientX - rect.left) / rect.width) * 100));
+  document.getElementById('splitPrev').style.cssText = 'flex:none;width:' + pct + '%';
+  if (monacoSplit) monacoSplit.layout();
+});
+document.addEventListener('mouseup', () => {
+  if (isResizing) {
+    isResizing = false;
+    rh.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  }
+});
 
 // ─────────────────────────────────────────────
 // KEYBOARD SHORTCUTS
 // ─────────────────────────────────────────────
-document.addEventListener('keydown',e=>{
-  if(e.ctrlKey&&e.key==='Enter') generate();
-  if(e.ctrlKey&&e.key==='1'){ e.preventDefault(); setView('preview'); }
-  if(e.ctrlKey&&e.key==='2'){ e.preventDefault(); setView('editor'); }
-  if(e.ctrlKey&&e.key==='3'){ e.preventDefault(); setView('split'); }
-  if(e.key==='Escape') closeProjModal();
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') generate();
+  if (e.ctrlKey && e.key === '1') { e.preventDefault(); setView('preview'); }
+  if (e.ctrlKey && e.key === '2') { e.preventDefault(); setView('editor');  }
+  if (e.ctrlKey && e.key === '3') { e.preventDefault(); setView('split');   }
+  if (e.key === 'Escape') closeProjModal();
 });
 
 // ─────────────────────────────────────────────
-// INIT — load saved projects
+// INIT
 // ─────────────────────────────────────────────
-(function init(){
+(function init() {
+  renderTemplates(TEMPLATES);
   renderProjects();
   renderVersions();
-  if(currentProjectId){
-    const p=projects.find(p=>p.id===currentProjectId);
-    if(p){ document.getElementById('projNameDisplay').textContent=p.name; }
+  if (currentProjectId) {
+    const p = projects.find(p => p.id === currentProjectId);
+    if (p) document.getElementById('projNameDisplay').textContent = p.name;
   }
 })();
+
 </script>
 </body>
 </html>
