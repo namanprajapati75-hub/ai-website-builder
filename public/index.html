@@ -251,6 +251,86 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 .tmpl-btn-gen{font-size:9px;padding:3px 9px;border:none;border-radius:5px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04060d;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:0.8px;transition:0.15s}
 .tmpl-btn-gen:hover{opacity:0.85;transform:translateY(-1px)}
 .tmpl-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted)}
+
+/* ══════════════════════════════════════════
+   MOBILE RESPONSIVE — 768px se niche
+══════════════════════════════════════════ */
+
+/* Hamburger button — mobile only */
+.mob-toggle{display:none;width:34px;height:34px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0;transition:0.2s}
+.mob-toggle:hover{border-color:var(--border-bright)}
+.mob-toggle span{display:block;width:14px;height:1.5px;background:var(--text);border-radius:2px;transition:all 0.25s}
+.mob-toggle.open span:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+.mob-toggle.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.mob-toggle.open span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+
+/* Mobile overlay backdrop */
+.mob-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;backdrop-filter:blur(2px)}
+.mob-backdrop.show{display:block}
+
+@media(max-width:768px){
+  /* Show hamburger */
+  .mob-toggle{display:flex}
+
+  /* Hide topbar clutter on mobile */
+  .top-mid{display:none}
+  .badge{display:none}
+
+  /* Left panel — slide in from left as drawer */
+  .left-panel{
+    position:fixed;
+    top:50px;
+    left:0;
+    bottom:0;
+    width:80vw;
+    max-width:300px;
+    z-index:100;
+    transform:translateX(-105%);
+    transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    box-shadow:4px 0 30px rgba(0,0,0,0.5);
+  }
+  .left-panel.mob-open{transform:translateX(0)}
+
+  /* Right panel takes full width */
+  .right-panel{width:100%!important;flex:1}
+
+  /* Preview toolbar — smaller on mobile */
+  .preview-toolbar{padding:6px 10px;gap:6px;flex-wrap:wrap}
+  .view-tabs{gap:2px}
+  .vtab{font-size:9px;padding:5px 8px}
+
+  /* Hide device switcher on mobile — no space */
+  .size-wrap{display:none}
+
+  /* Action buttons — smaller */
+  .act-btns{gap:4px}
+  .act-btn{font-size:9px;padding:4px 8px}
+
+  /* Top bar right — compact */
+  .top-right{gap:4px}
+  .status-pill .sdot + *{display:none} /* hide status text, keep dot */
+
+  /* Prompt textarea — taller on mobile for thumb typing */
+  .pw textarea{height:90px;font-size:12px}
+
+  /* Generate button — bigger tap target */
+  .gen-btn{padding:14px;font-size:13px}
+
+  /* Chat input taller */
+  .chat-input{font-size:12px}
+
+  /* Split view — hide on mobile, too small */
+  #vtab-split{display:none}
+}
+
+@media(max-width:480px){
+  /* Very small phones */
+  .left-panel{width:90vw}
+  .logo-text{font-size:13px}
+  .vtab{font-size:8px;padding:4px 6px}
+  .act-btn span{display:none} /* icon only */
+}
+
 </style>
 </head>
 <body>
@@ -267,8 +347,14 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
   <div class="top-right">
     <div class="badge bg">Groq</div>
     <div class="badge bb">70B</div>
+    <button class="mob-toggle" id="mobToggle" onclick="toggleMobilePanel()" aria-label="Toggle panel">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </div>
+
+<!-- MOBILE BACKDROP -->
+<div class="mob-backdrop" id="mobBackdrop" onclick="closeMobilePanel()"></div>
 
 <!-- APP BODY -->
 <div class="app-body">
@@ -446,6 +532,13 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 <script>
 // ─────────────────────────────────────────────
+// API CONFIG — Render.com backend URL
+// Render deploy hone ke baad apna URL yahan paste karo
+// e.g. https://ai-website-builder-backend.onrender.com
+// ─────────────────────────────────────────────
+const API_BASE = 'https://ai-website-builder-yave.onrender.com';
+
+// ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
 let lastCode = '';
@@ -507,24 +600,56 @@ function addChatMsg(role, text) {
 async function streamRequest(url, body, onChunk, onDone, onError) {
   try {
     const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-    const reader=res.body.getReader(), decoder=new TextDecoder();
-    let buf='';
-    while(true) {
-      const {done,value}=await reader.read();
-      if(done) break;
-      buf+=decoder.decode(value,{stream:true});
-      const lines=buf.split('\n'); buf=lines.pop();
-      for(const line of lines) {
-        if(!line.startsWith('data: ')) continue;
+
+    // Handle HTTP errors (rate limit 429, etc.) before streaming
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+      onError(new Error(errData.error || `Server error ${res.status}`));
+      return;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+
+      const lines = buf.split('\n');
+      buf = lines.pop() || ''; // keep last incomplete line in buffer
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data: ')) continue;
+        const jsonStr = trimmed.slice(6).trim();
+        if (!jsonStr || jsonStr === '[DONE]') continue;
         try {
-          const d=JSON.parse(line.slice(6));
-          if(d.type==='chunk') onChunk(d.content);
-          else if(d.type==='done') onDone(d.html);
-          else if(d.type==='error') onError(new Error(d.message));
-        } catch(e){}
+          const d = JSON.parse(jsonStr);
+          if (d.type === 'chunk') onChunk(d.content);
+          else if (d.type === 'done') onDone(d.html);
+          else if (d.type === 'error') onError(new Error(d.message));
+        } catch (e) {
+          // Partial JSON — put back in buffer and wait for next chunk
+          buf = trimmed + '\n' + buf;
+        }
       }
     }
-  } catch(err){ onError(err); }
+
+    // Flush remaining buffer
+    if (buf.trim().startsWith('data: ')) {
+      const jsonStr = buf.trim().slice(6).trim();
+      if (jsonStr && jsonStr !== '[DONE]') {
+        try {
+          const d = JSON.parse(jsonStr);
+          if (d.type === 'done') onDone(d.html);
+          else if (d.type === 'error') onError(new Error(d.message));
+        } catch (e) { /* truly incomplete, ignore */ }
+      }
+    }
+
+  } catch(err) { onError(err); }
 }
 
 // ─────────────────────────────────────────────
@@ -545,7 +670,7 @@ async function generate() {
 
   let accumulated='', updateTimer=null;
 
-  await streamRequest('/generate', {prompt},
+  await streamRequest(API_BASE+'/generate', {prompt},
     (chunk) => {
       accumulated+=chunk;
       schars.textContent=accumulated.length.toLocaleString()+' chars';
@@ -601,7 +726,7 @@ async function sendEdit() {
 
   let accumulated='', updateTimer=null;
 
-  await streamRequest('/edit', {html:lastCode, instruction},
+  await streamRequest(API_BASE+'/edit', {html:lastCode, instruction},
     (chunk) => {
       accumulated+=chunk;
       schars.textContent=accumulated.length.toLocaleString()+' chars';
@@ -964,6 +1089,37 @@ document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&e.key==='2'){ e.preventDefault(); setView('editor'); }
   if(e.ctrlKey&&e.key==='3'){ e.preventDefault(); setView('split'); }
   if(e.key==='Escape') closeProjModal();
+});
+
+
+// ─────────────────────────────────────────────
+// MOBILE PANEL TOGGLE
+// ─────────────────────────────────────────────
+function toggleMobilePanel() {
+  const panel = document.querySelector('.left-panel');
+  const backdrop = document.getElementById('mobBackdrop');
+  const toggle = document.getElementById('mobToggle');
+  const isOpen = panel.classList.contains('mob-open');
+  if (isOpen) {
+    closeMobilePanel();
+  } else {
+    panel.classList.add('mob-open');
+    backdrop.classList.add('show');
+    toggle.classList.add('open');
+  }
+}
+
+function closeMobilePanel() {
+  document.querySelector('.left-panel').classList.remove('mob-open');
+  document.getElementById('mobBackdrop').classList.remove('show');
+  document.getElementById('mobToggle').classList.remove('open');
+}
+
+// Close panel when a tab is clicked on mobile
+document.querySelectorAll('.ptab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    if (window.innerWidth <= 768) setTimeout(closeMobilePanel, 200);
+  });
 });
 
 // ─────────────────────────────────────────────
