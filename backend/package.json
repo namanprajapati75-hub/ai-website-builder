@@ -1,23 +1,35 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
+  "name": "ai-website-builder",
+  "version": "3.0.0",
+  "description": "AI Website Builder by Naman",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "express-rate-limit": "^7.4.1",
+    "groq-sdk": "^0.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/namanprajapati75-hub/ai-website-builder.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "express": "^4.18.2",
-    "groq-sdk": "^0.37.0",
-    "openai": "^4.0.0"
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/namanprajapati75-hub/ai-website-builder/issues"
   },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
-  }
+  "homepage": "https://github.com/namanprajapati75-hub/ai-website-builder#readme"
 }
