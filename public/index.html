@@ -251,6 +251,34 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 .tmpl-btn-gen{font-size:9px;padding:3px 9px;border:none;border-radius:5px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04060d;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:0.8px;transition:0.15s}
 .tmpl-btn-gen:hover{opacity:0.85;transform:translateY(-1px)}
 .tmpl-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted)}
+/* ── STYLE PRESETS ── */
+.preset-section{display:flex;flex-direction:column;gap:8px}
+.preset-row{display:flex;flex-direction:column;gap:5px}
+.preset-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+
+/* Color palettes */
+.palettes{display:flex;gap:5px;flex-wrap:wrap}
+.palette{width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;transition:all 0.18s;position:relative;flex-shrink:0}
+.palette:hover{transform:scale(1.12);border-color:rgba(255,255,255,0.3)}
+.palette.selected{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,0.2)}
+.palette-dots{display:flex;width:100%;height:100%;border-radius:7px;overflow:hidden}
+.palette-dots span{flex:1;display:block}
+.palette-name{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--muted);white-space:nowrap;opacity:0;transition:0.15s;pointer-events:none}
+.palette:hover .palette-name{opacity:1}
+
+/* Font pairs */
+.fonts{display:flex;flex-direction:column;gap:4px}
+.font-opt{padding:7px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:space-between}
+.font-opt:hover{border-color:rgba(99,255,180,0.25)}
+.font-opt.selected{border-color:rgba(99,255,180,0.5);background:rgba(99,255,180,0.06)}
+.font-main{font-size:12px;color:var(--text);font-weight:600}
+.font-sub{font-size:9px;color:var(--muted)}
+.font-tick{font-size:10px;color:var(--accent);opacity:0;transition:0.15s}
+.font-opt.selected .font-tick{opacity:1}
+
+/* Active preset tag */
+.preset-active{font-size:9px;color:var(--accent);letter-spacing:0.5px;padding:2px 8px;background:rgba(99,255,180,0.08);border:1px solid rgba(99,255,180,0.2);border-radius:10px;display:inline-block;margin-top:2px}
+
 
 /* ══════════════════════════════════════════
    MOBILE RESPONSIVE — 768px se niche
@@ -390,6 +418,58 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
           <div class="pw">
             <textarea id="prompt" placeholder="e.g. A dark cyberpunk SaaS landing page for an AI video editor with neon cyan accents, glassmorphism cards, and smooth animations" oninput="updateChar(this)" maxlength="600"></textarea>
             <div class="cc"><span id="charCount">0</span>/600</div>
+          </div>
+        </div>
+        <div class="preset-section">
+          <div class="preset-row">
+            <div class="preset-label">Color Palette</div>
+            <div class="palettes" id="palettes">
+              <div class="palette selected" data-name="Cyberpunk" data-value="CYBERPUNK dark neon purple color scheme" onclick="selectPalette(this)" title="Cyberpunk">
+                <div class="palette-dots"><span style="background:#03001C"></span><span style="background:#BC13FE"></span><span style="background:#00FFFF"></span></div>
+                <span class="palette-name">Cyber</span>
+              </div>
+              <div class="palette" data-name="Emerald" data-value="EMERALD dark green color scheme" onclick="selectPalette(this)" title="Emerald">
+                <div class="palette-dots"><span style="background:#020B08"></span><span style="background:#00FF87"></span><span style="background:#60EFFF"></span></div>
+                <span class="palette-name">Emerald</span>
+              </div>
+              <div class="palette" data-name="Sunset" data-value="SUNSET dark warm red orange color scheme" onclick="selectPalette(this)" title="Sunset">
+                <div class="palette-dots"><span style="background:#0D0208"></span><span style="background:#FF6B6B"></span><span style="background:#FFE66D"></span></div>
+                <span class="palette-name">Sunset</span>
+              </div>
+              <div class="palette" data-name="Ocean" data-value="OCEAN dark blue purple color scheme" onclick="selectPalette(this)" title="Ocean">
+                <div class="palette-dots"><span style="background:#000B1E"></span><span style="background:#4CC9F0"></span><span style="background:#7B2FBE"></span></div>
+                <span class="palette-name">Ocean</span>
+              </div>
+              <div class="palette" data-name="Rose" data-value="ROSE dark pink gold color scheme" onclick="selectPalette(this)" title="Rose">
+                <div class="palette-dots"><span style="background:#0D0608"></span><span style="background:#FF2D78"></span><span style="background:#FF9A00"></span></div>
+                <span class="palette-name">Rose</span>
+              </div>
+              <div class="palette" data-name="Minimal" data-value="MINIMAL clean white light color scheme" onclick="selectPalette(this)" title="Minimal">
+                <div class="palette-dots"><span style="background:#f8f8f8"></span><span style="background:#111"></span><span style="background:#888"></span></div>
+                <span class="palette-name">Minimal</span>
+              </div>
+            </div>
+          </div>
+          <div class="preset-row" style="margin-top:6px">
+            <div class="preset-label">Font Style</div>
+            <div class="fonts" id="fontOpts">
+              <div class="font-opt selected" data-value="modern geometric sans-serif fonts" onclick="selectFont(this)">
+                <div><div class="font-main">Modern</div><div class="font-sub">Syne + DM Sans</div></div>
+                <span class="font-tick">✓</span>
+              </div>
+              <div class="font-opt" data-value="elegant serif editorial fonts" onclick="selectFont(this)">
+                <div><div class="font-main">Editorial</div><div class="font-sub">Playfair + Inter</div></div>
+                <span class="font-tick">✓</span>
+              </div>
+              <div class="font-opt" data-value="bold display brutalist fonts" onclick="selectFont(this)">
+                <div><div class="font-main">Bold</div><div class="font-sub">Bebas + Outfit</div></div>
+                <span class="font-tick">✓</span>
+              </div>
+              <div class="font-opt" data-value="technical monospace code fonts" onclick="selectFont(this)">
+                <div><div class="font-main">Technical</div><div class="font-sub">Space Grotesk + Mono</div></div>
+                <span class="font-tick">✓</span>
+              </div>
+            </div>
           </div>
         </div>
         <button class="gen-btn" onclick="generate()" id="genBtn">
@@ -657,8 +737,9 @@ async function streamRequest(url, body, onChunk, onDone, onError) {
 // ─────────────────────────────────────────────
 async function generate() {
   if(isGenerating) return;
-  const prompt=document.getElementById('prompt').value.trim();
-  if(!prompt){ setStatus('error','Enter a prompt first!'); return; }
+  const rawPrompt=document.getElementById('prompt').value.trim();
+  if(!rawPrompt){ setStatus('error','Enter a prompt first!'); return; }
+  const prompt = buildPromptWithStyle(rawPrompt);
 
   const btn=document.getElementById('genBtn'), btnTxt=document.getElementById('btnTxt');
   const sovlay=document.getElementById('sovlay'), schars=document.getElementById('streamChars');
@@ -1091,6 +1172,32 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeProjModal();
 });
 
+
+
+// ─────────────────────────────────────────────
+// STYLE PRESETS — palette & font picker
+// ─────────────────────────────────────────────
+let selectedPalette = 'CYBERPUNK dark neon purple color scheme';
+let selectedFont    = 'modern geometric sans-serif fonts';
+
+function selectPalette(el) {
+  document.querySelectorAll('.palette').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPalette = el.dataset.value;
+}
+
+function selectFont(el) {
+  document.querySelectorAll('.font-opt').forEach(f => f.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedFont = el.dataset.value;
+}
+
+// Inject style context into prompt before generating
+function buildPromptWithStyle(basePrompt) {
+  const paletteName = document.querySelector('.palette.selected')?.dataset.name || '';
+  const fontName    = document.querySelector('.font-opt.selected .font-main')?.textContent || '';
+  return basePrompt + '\n\nSTYLE: Use ' + selectedPalette + '. Use ' + selectedFont + '. Palette: ' + paletteName + '. Font style: ' + fontName + '.';
+}
 
 // ─────────────────────────────────────────────
 // MOBILE PANEL TOGGLE
