@@ -497,13 +497,38 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 <script>
-
 // ─────────────────────────────────────────────
-// CONFIG — change this to your backend URL if needed
-// e.g. 'https://your-app.railway.app'
-// Leave empty '' to use same domain (default)
+// Load Monaco only on desktop
+// ─────────────────────────────────────────────
+const IS_MOBILE = window.innerWidth <= 768;
+
+if (!IS_MOBILE) {
+  const loaderScript = document.createElement('script');
+  loaderScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
+  loaderScript.onload = () => {
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
+      monacoReady = true;
+      const opts = {
+        language:'html', theme:'vs-dark', fontFamily:"'JetBrains Mono',monospace",
+        scrollBeyondLastLine:false, automaticLayout:true, minimap:{enabled:true},
+        padding:{top:10}, smoothScrolling:true, cursorBlinking:'smooth'
+      };
+      monacoMain  = monaco.editor.create(document.getElementById('monacoMain'),  { ...opts, fontSize:12, value:'<!-- Generate a website to see code -->' });
+      monacoSplit = monaco.editor.create(document.getElementById('monacoSplit'), { ...opts, fontSize:11, minimap:{enabled:false}, value:'<!-- Generate a website to see code -->' });
+    });
+  };
+  document.head.appendChild(loaderScript);
+} else {
+  // Mobile: use simple textarea editors
+  document.getElementById('monacoMain').innerHTML  = '<textarea id="mobileEditor" style="width:100%;height:100%;background:#0d1424;color:#e8eaf0;border:none;outline:none;padding:12px;font-family:monospace;font-size:11px;resize:none;line-height:1.6"><!-- Generate a website to see code --></textarea>';
+  document.getElementById('monacoSplit').innerHTML = '<textarea id="mobileSplitEditor" style="width:100%;height:100%;background:#0d1424;color:#e8eaf0;border:none;outline:none;padding:12px;font-family:monospace;font-size:11px;resize:none;line-height:1.6"><!-- Generate a website to see code --></textarea>';
+}
+</script>
+<script>
+// ─────────────────────────────────────────────
+// CONFIG
 // ─────────────────────────────────────────────
 const API_BASE = '';
 
@@ -519,20 +544,21 @@ let currentProjectId = localStorage.getItem('aib_current') || null;
 let versions = [];
 let currentVersionIdx = -1;
 
-// ─────────────────────────────────────────────
-// MONACO INIT
-// ─────────────────────────────────────────────
-require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
-require(['vs/editor/editor.main'], function () {
-  monacoReady = true;
-  const opts = {
-    language:'html', theme:'vs-dark', fontFamily:"'JetBrains Mono',monospace",
-    scrollBeyondLastLine:false, automaticLayout:true, minimap:{enabled:true},
-    padding:{top:10}, smoothScrolling:true, cursorBlinking:'smooth'
-  };
-  monacoMain  = monaco.editor.create(document.getElementById('monacoMain'),  { ...opts, fontSize:12, value:'<!-- Generate a website to see code -->' });
-  monacoSplit = monaco.editor.create(document.getElementById('monacoSplit'), { ...opts, fontSize:11, minimap:{enabled:false}, value:'<!-- Generate a website to see code -->' });
-});
+// Mobile editor helpers
+function getMobileEditorValue() {
+  const el = document.getElementById('mobileEditor');
+  return el ? el.value : '';
+}
+function setMobileEditorValue(val) {
+  const el = document.getElementById('mobileEditor');
+  if (el) el.value = val;
+  const el2 = document.getElementById('mobileSplitEditor');
+  if (el2) el2.value = val;
+}
+function setEditorValue(val) {
+  if (monacoReady) { monacoMain.setValue(val); monacoSplit.setValue(val); }
+  else setMobileEditorValue(val);
+}
 
 // ─────────────────────────────────────────────
 // UI HELPERS
@@ -627,6 +653,7 @@ async function generate() {
     document.getElementById('splitFrame').srcdoc = html;
     emptyState.classList.add('gone');
     if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
+    else setMobileEditorValue(html);
     setStatus('done', `Done! ${html.length.toLocaleString()} chars`);
     schars.textContent = html.length.toLocaleString() + ' chars';
     addVersion('generate', prompt, html);
@@ -691,7 +718,7 @@ async function sendEdit() {
     document.getElementById('mainFrame').srcdoc  = html;
     document.getElementById('splitFrame').srcdoc = html;
     if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
-    aiMsgEl.classList.remove('typing');
+    else setMobileEditorValue(html);
     aiMsgEl.querySelector('.msg-bubble').textContent = '✓ Done! ' + instruction;
     setStatus('done', 'Edit applied!');
     schars.textContent = html.length.toLocaleString() + ' chars';
@@ -846,6 +873,7 @@ function restoreVersion(idx) {
   document.getElementById('mainFrame').srcdoc  = lastCode;
   document.getElementById('splitFrame').srcdoc = lastCode;
   if (monacoReady) { monacoMain.setValue(lastCode); monacoSplit.setValue(lastCode); }
+  else setMobileEditorValue(lastCode);
   document.getElementById('emptyState').classList.add('gone');
   setStatus('done', `Restored to v${versions.length - idx}`);
   renderVersions();
@@ -900,6 +928,7 @@ function loadProject(id) {
   document.getElementById('mainFrame').srcdoc  = lastCode;
   document.getElementById('splitFrame').srcdoc = lastCode;
   if (monacoReady) { monacoMain.setValue(lastCode); monacoSplit.setValue(lastCode); }
+  else setMobileEditorValue(lastCode);
   document.getElementById('emptyState').classList.add('gone');
   document.getElementById('projNameDisplay').textContent = p.name;
   addVersion('generate', p.prompt || p.name, p.html);
@@ -1029,9 +1058,29 @@ function setDevice(d) {
 // ─────────────────────────────────────────────
 // EDITOR ACTIONS
 // ─────────────────────────────────────────────
-function applyEditor()  { if (!monacoReady || !monacoMain)  return; lastCode = monacoMain.getValue();  document.getElementById('mainFrame').srcdoc = lastCode; setStatus('done','Applied!'); setView('preview'); }
+function applyEditor() {
+  if (monacoReady && monacoMain) {
+    lastCode = monacoMain.getValue();
+  } else {
+    const el = document.getElementById('mobileEditor');
+    if (el) lastCode = el.value;
+  }
+  document.getElementById('mainFrame').srcdoc = lastCode;
+  setStatus('done','Applied!');
+  setView('preview');
+}
 function formatEditor() { if (monacoReady && monacoMain) monacoMain.getAction('editor.action.formatDocument').run(); }
-function applySplit()   { if (!monacoReady || !monacoSplit) return; lastCode = monacoSplit.getValue(); document.getElementById('splitFrame').srcdoc = lastCode; monacoMain.setValue(lastCode); setStatus('done','Applied!'); }
+function applySplit() {
+  if (monacoReady && monacoSplit) {
+    lastCode = monacoSplit.getValue();
+    monacoMain.setValue(lastCode);
+  } else {
+    const el = document.getElementById('mobileSplitEditor');
+    if (el) { lastCode = el.value; const el2 = document.getElementById('mobileEditor'); if(el2) el2.value = lastCode; }
+  }
+  document.getElementById('splitFrame').srcdoc = lastCode;
+  setStatus('done','Applied!');
+}
 
 // ─────────────────────────────────────────────
 // EXPORT
