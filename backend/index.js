@@ -2,10 +2,52 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 const Groq = require("groq-sdk");
 
 const app = express();
-app.use(cors());
+
+// ─────────────────────────────────────────────
+// CORS — only allow your own frontend domain
+// Set ALLOWED_ORIGIN in .env for production
+// e.g. ALLOWED_ORIGIN=https://ai-website-builder.vercel.app
+// ─────────────────────────────────────────────
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (Postman, curl, etc.) in dev
+    if (!origin || ALLOWED_ORIGIN === "*") return callback(null, true);
+    if (origin === ALLOWED_ORIGIN) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+}));
+
+// ─────────────────────────────────────────────
+// RATE LIMITING
+// ─────────────────────────────────────────────
+
+// General API limit — 100 requests per 15 min per IP
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: "Too many requests. Please wait a few minutes." },
+});
+
+// Strict limit on AI endpoints — 10 generates per 15 min per IP
+// (Groq API costs money, protect yourself!)
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: "AI generation limit reached. Try again in 15 minutes." },
+});
+
+app.use(generalLimiter);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -244,7 +286,7 @@ function repairHTML(html) {
 // ─────────────────────────────────────────────
 // GENERATE (streaming)
 // ─────────────────────────────────────────────
-app.post("/generate", async (req, res) => {
+app.post("/generate", aiLimiter, async (req, res) => {
   try {
     const { prompt } = req.body;
     if (!prompt || prompt.trim().length < 3) {
@@ -319,7 +361,7 @@ app.post("/generate", async (req, res) => {
 // ─────────────────────────────────────────────
 // EDIT (streaming)
 // ─────────────────────────────────────────────
-app.post("/edit", async (req, res) => {
+app.post("/edit", aiLimiter, async (req, res) => {
   try {
     const { html, instruction } = req.body;
     if (!html || !instruction) {
