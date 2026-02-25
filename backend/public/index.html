@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#04060d;--surface:#080d1a;--surface2:#0d1424;--surface3:#111827;
+  --bg:#04060d;--surface:#080d1a;--surface2:#0d1424;
   --border:rgba(255,255,255,0.06);--border-bright:rgba(99,255,180,0.25);
   --accent:#63ffb4;--accent2:#00e5ff;--accent3:#ff6b9d;
   --text:#e8eaf0;--muted:#546478;--danger:#ff4d6d;--warn:#f59e0b;
@@ -16,7 +16,6 @@
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;display:flex;flex-direction:column}
 
-/* BG EFFECTS */
 .blobs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .blob{position:absolute;border-radius:50%;filter:blur(130px);opacity:0.07;animation:bf 22s ease-in-out infinite}
 .b1{width:550px;height:550px;background:radial-gradient(circle,#63ffb4,transparent 70%);top:-180px;left:-120px;animation-duration:26s}
@@ -26,52 +25,61 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 @keyframes scan{0%{top:-1px}100%{top:100vh}}
 
 /* TOPBAR */
-.topbar{height:50px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(4,6,13,0.92);backdrop-filter:blur(20px);flex-shrink:0;position:relative;z-index:100}
+.topbar{height:50px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(4,6,13,0.95);backdrop-filter:blur(20px);flex-shrink:0;position:relative;z-index:200}
 .logo{display:flex;align-items:center;gap:9px}
-.logo-icon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:13px;box-shadow:0 0 14px rgba(99,255,180,0.28);flex-shrink:0}
+.logo-icon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:13px;flex-shrink:0}
 .logo-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .top-mid{display:flex;align-items:center;gap:8px}
-.proj-name{font-size:11px;color:var(--text);font-weight:500;cursor:pointer;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:0.15s;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.proj-name{font-size:11px;color:var(--text);cursor:pointer;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:0.15s;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .proj-name:hover{border-color:var(--border-bright);color:var(--accent)}
 .top-right{display:flex;align-items:center;gap:7px}
 .badge{font-size:9px;padding:3px 8px;border-radius:20px;border:1px solid;letter-spacing:1.5px;text-transform:uppercase}
 .bg{color:var(--accent);border-color:rgba(99,255,180,0.3);background:rgba(99,255,180,0.06)}
 .bb{color:var(--accent2);border-color:rgba(0,229,255,0.3);background:rgba(0,229,255,0.06)}
-.status-pill{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);letter-spacing:0.8px;padding:3px 9px;border-radius:20px;border:1px solid var(--border)}
+.status-pill{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);padding:3px 9px;border-radius:20px;border:1px solid var(--border)}
 .sdot{width:5px;height:5px;border-radius:50%;background:var(--muted);transition:all 0.3s;flex-shrink:0}
-.sdot.idle{background:var(--muted)}
 .sdot.working{background:var(--accent2);box-shadow:0 0 6px var(--accent2);animation:sp 1.2s ease-in-out infinite}
 .sdot.done{background:var(--accent);box-shadow:0 0 6px var(--accent)}
 .sdot.err{background:var(--danger);box-shadow:0 0 5px var(--danger)}
 @keyframes sp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.75)}}
 
+/* HAMBURGER */
+.ham-btn{display:none;width:32px;height:32px;background:transparent;border:1px solid var(--border);border-radius:7px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:0.2s;flex-shrink:0}
+.ham-btn:hover{border-color:var(--border-bright)}
+.ham-line{width:14px;height:1.5px;background:var(--text);border-radius:2px;transition:all 0.25s}
+.ham-btn.open .ham-line:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
+.ham-btn.open .ham-line:nth-child(2){opacity:0}
+.ham-btn.open .ham-line:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+.panel-overlay{display:none;position:fixed;inset:0;background:rgba(4,6,13,0.75);backdrop-filter:blur(3px);z-index:98}
+.panel-overlay.show{display:block}
+
 /* LAYOUT */
 .app-body{flex:1;display:flex;overflow:hidden;position:relative;z-index:10}
 
 /* LEFT PANEL */
-.left-panel{width:280px;min-width:280px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--surface);overflow:hidden;position:relative;z-index:20}
+.left-panel{width:272px;min-width:272px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--surface);overflow:hidden;z-index:99}
 .panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
 .panel-tabs::-webkit-scrollbar{display:none}
-.ptab{flex:1;min-width:fit-content;padding:11px 8px;font-size:9px;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'JetBrains Mono',monospace;letter-spacing:0.8px;text-transform:uppercase;transition:0.15s;border-bottom:2px solid transparent;white-space:nowrap}
+.ptab{flex:1;min-width:0;padding:11px 4px;font-size:9px;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;text-transform:uppercase;transition:0.15s;border-bottom:2px solid transparent;white-space:nowrap}
 .ptab:hover{color:var(--text)}
 .ptab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .panel-page{display:none;flex-direction:column;flex:1;overflow:hidden}
 .panel-page.active{display:flex}
 
-/* GENERATE PAGE */
+/* GEN PAGE */
 .gen-page{padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;flex:1}
 .gen-page::-webkit-scrollbar{width:3px}
 .gen-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.slabel{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.slabel{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
 .chips{display:flex;flex-wrap:wrap;gap:4px}
 .chip{font-size:10px;padding:3px 9px;border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;transition:0.15s;white-space:nowrap}
 .chip:hover{border-color:var(--border-bright);color:var(--accent);background:rgba(99,255,180,0.05)}
 .pw{position:relative}
-.pw textarea{width:100%;height:110px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:11px;padding-bottom:28px;color:var(--text);resize:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;transition:border-color 0.2s,box-shadow 0.2s}
+.pw textarea{width:100%;height:110px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:11px;padding-bottom:28px;color:var(--text);resize:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;transition:border-color 0.2s}
 .pw textarea::placeholder{color:var(--muted)}
-.pw textarea:focus{border-color:rgba(99,255,180,0.4);box-shadow:0 0 0 3px rgba(99,255,180,0.05)}
+.pw textarea:focus{border-color:rgba(99,255,180,0.4)}
 .cc{position:absolute;bottom:7px;right:10px;font-size:9px;color:var(--muted)}
-.gen-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--accent),#22d97a,var(--accent2));background-size:200% 200%;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#04060d;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s;position:relative;overflow:hidden;animation:gs 4s ease infinite}
+.gen-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#22d97a,var(--accent2));background-size:200% 200%;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#04060d;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s;animation:gs 4s ease infinite}
 @keyframes gs{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .gen-btn:hover{transform:translateY(-1px);box-shadow:0 5px 20px rgba(99,255,180,0.25)}
 .gen-btn:disabled{opacity:0.55;cursor:not-allowed;transform:none}
@@ -80,12 +88,12 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .gen-btn.loading .spinner{display:block}
 .gen-btn.loading .bicon{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
-.sbar{padding:8px 10px;background:var(--surface2);border-radius:7px;border:1px solid var(--border);display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);transition:all 0.3s;flex-shrink:0}
+.sbar{padding:8px 10px;background:var(--surface2);border-radius:7px;border:1px solid var(--border);display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);transition:all 0.3s}
 .sbar.ok{border-color:rgba(99,255,180,0.3);color:var(--accent)}
 .sbar.bad{border-color:rgba(255,77,109,0.3);color:var(--danger)}
 .sbar.warn{border-color:rgba(245,158,11,0.3);color:var(--warn)}
 
-/* TEMPLATE GALLERY */
+/* TEMPLATES */
 .tmpl-page{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
 .tmpl-page::-webkit-scrollbar{width:3px}
 .tmpl-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
@@ -93,7 +101,7 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .tmpl-search:focus{border-color:rgba(99,255,180,0.4)}
 .tmpl-search::placeholder{color:var(--muted)}
 .tmpl-grid{display:flex;flex-direction:column;gap:6px}
-.tmpl-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;cursor:default;transition:all 0.18s;position:relative;overflow:hidden;animation:slideIn 0.2s ease}
+.tmpl-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;transition:all 0.18s}
 .tmpl-card:hover{border-color:var(--border-bright)}
 .tmpl-card-top{display:flex;align-items:center;gap:9px;margin-bottom:5px}
 .tmpl-icon{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:15px;flex-shrink:0;border:1px solid var(--border)}
@@ -104,13 +112,13 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .tmpl-tag.hot{color:var(--accent3);background:rgba(255,107,157,0.1);border:1px solid rgba(255,107,157,0.2)}
 .tmpl-desc{font-size:10px;color:var(--muted);line-height:1.5;padding-left:39px}
 .tmpl-actions{display:flex;gap:5px;margin-top:8px;padding-left:39px}
-.tmpl-btn-use{font-size:9px;padding:4px 10px;border:1px solid rgba(99,255,180,0.3);border-radius:5px;background:transparent;color:var(--accent);cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.8px;transition:0.15s}
+.tmpl-btn-use{font-size:9px;padding:4px 10px;border:1px solid rgba(99,255,180,0.3);border-radius:5px;background:transparent;color:var(--accent);cursor:pointer;font-family:'JetBrains Mono',monospace;transition:0.15s}
 .tmpl-btn-use:hover{background:rgba(99,255,180,0.08)}
-.tmpl-btn-gen{font-size:9px;padding:4px 10px;border:none;border-radius:5px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04060d;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:0.8px;transition:0.15s}
-.tmpl-btn-gen:hover{opacity:0.85;transform:translateY(-1px)}
+.tmpl-btn-gen{font-size:9px;padding:4px 10px;border:none;border-radius:5px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04060d;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:700;transition:0.15s}
+.tmpl-btn-gen:hover{opacity:0.85}
 .tmpl-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted)}
 
-/* CHAT PAGE */
+/* CHAT */
 .chat-page{display:flex;flex-direction:column;flex:1;overflow:hidden}
 .chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
 .chat-messages::-webkit-scrollbar{width:3px}
@@ -130,23 +138,22 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .msg-time{font-size:8px;color:var(--muted);padding:0 4px}
 .chat-suggestions{display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px;border-top:1px solid var(--border)}
 .sugg{font-size:9px;padding:3px 8px;border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;transition:0.15s;white-space:nowrap}
-.sugg:hover{border-color:var(--border-bright);color:var(--accent);background:rgba(99,255,180,0.05)}
-.chat-input-wrap{border-top:1px solid var(--border);padding:10px 12px;display:flex;gap:7px;flex-shrink:0;background:var(--surface)}
-.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;resize:none;height:36px;transition:border-color 0.2s;line-height:1.5}
+.sugg:hover{border-color:var(--border-bright);color:var(--accent)}
+.chat-input-wrap{border-top:1px solid var(--border);padding:10px 12px;display:flex;gap:7px;flex-shrink:0}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;resize:none;height:36px;transition:border-color 0.2s}
 .chat-input:focus{border-color:rgba(99,255,180,0.4)}
 .chat-input::placeholder{color:var(--muted)}
-.chat-send{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;cursor:pointer;display:grid;place-items:center;font-size:14px;transition:all 0.2s;flex-shrink:0;color:#04060d;font-weight:700}
-.chat-send:hover{transform:scale(1.05);box-shadow:0 4px 14px rgba(99,255,180,0.3)}
+.chat-send{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;cursor:pointer;display:grid;place-items:center;font-size:15px;transition:all 0.2s;flex-shrink:0;color:#04060d;font-weight:700}
+.chat-send:hover{transform:scale(1.05)}
 .chat-send:disabled{opacity:0.4;cursor:not-allowed;transform:none}
 
-/* PROJECTS PAGE */
+/* PROJECTS */
 .proj-page{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
 .proj-page::-webkit-scrollbar{width:3px}
 .proj-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.new-proj-btn{width:100%;padding:10px;background:transparent;border:1px dashed rgba(99,255,180,0.3);border-radius:9px;color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:0.2s;letter-spacing:0.5px}
+.new-proj-btn{width:100%;padding:10px;background:transparent;border:1px dashed rgba(99,255,180,0.3);border-radius:9px;color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:0.2s}
 .new-proj-btn:hover{background:rgba(99,255,180,0.05);border-style:solid}
-.proj-card{padding:11px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:0.15s;position:relative;animation:slideIn 0.25s ease}
-@keyframes slideIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+.proj-card{padding:11px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:0.15s;position:relative}
 .proj-card:hover{border-color:var(--border-bright)}
 .proj-card.current{border-color:rgba(99,255,180,0.35);background:rgba(99,255,180,0.04)}
 .proj-card-name{font-size:12px;color:var(--text);font-weight:500;margin-bottom:4px;font-family:'Syne',sans-serif}
@@ -154,13 +161,13 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .proj-card-del{position:absolute;top:10px;right:10px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:12px;opacity:0;transition:0.15s}
 .proj-card:hover .proj-card-del{opacity:1}
 .proj-card-del:hover{color:var(--danger)}
-.proj-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted);letter-spacing:0.5px}
+.proj-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted)}
 
-/* VERSIONS PAGE */
+/* VERSIONS */
 .ver-page{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px}
 .ver-page::-webkit-scrollbar{width:3px}
 .ver-page::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.ver-card{padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:0.15s;animation:slideIn 0.25s ease}
+.ver-card{padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:0.15s}
 .ver-card:hover{border-color:var(--border-bright)}
 .ver-card.current-ver{border-color:rgba(99,255,180,0.35);background:rgba(99,255,180,0.04)}
 .ver-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
@@ -171,23 +178,22 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .ver-type.generate{color:var(--accent);background:rgba(99,255,180,0.1)}
 .ver-type.edit{color:var(--accent2);background:rgba(0,229,255,0.1)}
 .ver-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted)}
-.ver-restore-btn{width:100%;padding:7px;background:transparent;border:1px solid rgba(99,255,180,0.2);border-radius:6px;color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;transition:0.2s;letter-spacing:1px;margin-top:4px;text-transform:uppercase}
+.ver-restore-btn{width:100%;padding:7px;background:transparent;border:1px solid rgba(99,255,180,0.2);border-radius:6px;color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;transition:0.2s;margin-top:4px;text-transform:uppercase;letter-spacing:1px}
 .ver-restore-btn:hover{background:rgba(99,255,180,0.08)}
 
 /* RIGHT PANEL */
-.right-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:10}
-.preview-toolbar{height:42px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 14px;flex-shrink:0;background:rgba(8,13,26,0.85)}
+.right-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.preview-toolbar{height:42px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 14px;flex-shrink:0;background:rgba(8,13,26,0.9)}
 .tl{display:flex;align-items:center;gap:7px}
-.tc{flex:1;display:flex;align-items:center;justify-content:center;gap:5px}
+.tc{flex:1;display:flex;align-items:center;justify-content:center}
 .tr{display:flex;align-items:center;gap:5px}
 .view-tabs{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:2px;gap:2px}
-.vtab{padding:4px 11px;border-radius:5px;font-size:10px;color:var(--muted);cursor:pointer;transition:0.15s;border:none;background:transparent;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:4px}
+.vtab{padding:4px 11px;border-radius:5px;font-size:10px;color:var(--muted);cursor:pointer;transition:0.15s;border:none;background:transparent;font-family:'JetBrains Mono',monospace}
 .vtab.active{background:rgba(99,255,180,0.1);color:var(--accent);border:1px solid rgba(99,255,180,0.2)}
 .vtab:hover:not(.active){color:var(--text)}
 .size-tabs{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:2px;gap:2px}
 .stab{padding:4px 9px;border-radius:4px;font-size:12px;color:var(--muted);cursor:pointer;transition:0.15s;border:none;background:transparent}
 .stab.active{background:rgba(99,255,180,0.1);color:var(--accent)}
-.stab:hover:not(.active){color:var(--text)}
 .tbtn{padding:4px 9px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;transition:0.15s}
 .tbtn:hover{border-color:var(--border-bright);color:var(--accent)}
 .browser-bar{height:34px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;padding:0 13px;flex-shrink:0;background:var(--surface2)}
@@ -197,15 +203,15 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 .urlbar{flex:1;max-width:340px;height:20px;background:var(--bg);border-radius:4px;border:1px solid var(--border);display:flex;align-items:center;padding:0 8px;gap:4px}
 .ulock{font-size:9px;color:var(--accent)}.utxt{font-size:9px;color:var(--muted)}
 .content-area{flex:1;display:flex;overflow:hidden;position:relative}
-.preview-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;align-items:center;background:#111827;transition:all 0.3s}
+.preview-panel{flex:1;display:flex;align-items:center;justify-content:flex-start;flex-direction:column;overflow:hidden;position:relative;background:#111827;transition:all 0.3s}
 .preview-panel.mobile-view,.preview-panel.tablet-view{background:#1a1a2e;justify-content:center;padding:16px 0}
-.dev-frame{width:100%;height:100%;transition:all 0.32s cubic-bezier(0.4,0,0.2,1)}
+.dev-frame{width:100%;height:100%;transition:all 0.32s cubic-bezier(0.4,0,0.2,1);position:relative}
 .dev-frame.mobile{width:390px;height:calc(100% - 32px);border-radius:36px;overflow:hidden;border:8px solid #1e293b;box-shadow:0 0 0 2px #0f172a,0 28px 70px rgba(0,0,0,0.65)}
 .dev-frame.tablet{width:768px;height:calc(100% - 32px);border-radius:18px;overflow:hidden;border:9px solid #1e293b;box-shadow:0 0 0 2px #0f172a,0 28px 70px rgba(0,0,0,0.55)}
-.dev-frame.desktop{width:100%;height:100%;border-radius:0;border:none;box-shadow:none}
+.dev-frame.desktop{width:100%;height:100%;border-radius:0;border:none}
 iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 .empty-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none;transition:opacity 0.4s;z-index:5}
-.empty-state.gone{opacity:0;pointer-events:none}
+.empty-state.gone{opacity:0}
 .eorb{width:65px;height:65px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(99,255,180,0.2),transparent 70%);border:1px solid rgba(99,255,180,0.15);display:grid;place-items:center;font-size:24px;animation:op 3s ease-in-out infinite}
 @keyframes op{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.05);opacity:1}}
 .etitle{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;background:linear-gradient(135deg,#fff,var(--muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -217,103 +223,69 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 .editor-panel{flex:1;overflow:hidden;display:none;flex-direction:column}
 .editor-panel.vis{display:flex}
 .etopbar{height:34px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 12px;flex-shrink:0}
-.efname{font-size:10px;color:var(--muted);letter-spacing:0.5px}
+.efname{font-size:10px;color:var(--muted)}
 .eactions{display:flex;gap:4px}
-.ebtn{padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.8px;transition:0.15s}
+.ebtn{padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--muted);font-size:9px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:0.15s}
 .ebtn:hover{border-color:var(--border-bright);color:var(--accent)}
 .split-panel{flex:1;display:none;overflow:hidden}
 .split-panel.vis{display:flex}
-.split-prev{flex:1;overflow:hidden;position:relative;border-right:1px solid var(--border)}
+.split-prev{flex:1;overflow:hidden;border-right:1px solid var(--border)}
 .split-ed{flex:1;overflow:hidden;display:flex;flex-direction:column}
 .rhandle{width:4px;background:var(--border);cursor:col-resize;transition:background 0.15s;flex-shrink:0}
 .rhandle:hover,.rhandle.dragging{background:var(--accent)}
 
-/* ── HAMBURGER BUTTON ── */
-.ham-btn{display:none;width:34px;height:34px;background:transparent;border:1px solid var(--border);border-radius:7px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:0.2s;flex-shrink:0}
-.ham-btn:hover{border-color:var(--border-bright)}
-.ham-line{width:14px;height:1.5px;background:var(--text);border-radius:2px;transition:all 0.25s}
-.ham-btn.open .ham-line:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
-.ham-btn.open .ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
-.ham-btn.open .ham-line:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
-
-/* ── MOBILE OVERLAY ── */
-.panel-overlay{display:none;position:fixed;inset:0;background:rgba(4,6,13,0.7);backdrop-filter:blur(4px);z-index:49}
-.panel-overlay.show{display:block}
-
-/* ── MOBILE STYLES ── */
-@media (max-width: 768px) {
-  .ham-btn{display:flex}
-
-  .left-panel{
-    position:fixed;top:50px;left:0;bottom:0;
-    width:280px;min-width:280px;
-    transform:translateX(-100%);
-    transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
-    z-index:50;
-    box-shadow:4px 0 30px rgba(0,0,0,0.5);
-  }
-  .left-panel.mobile-open{transform:translateX(0)}
-
-  .top-mid{flex:1;justify-content:center}
-  .proj-name{max-width:140px}
-
-  /* Make preview fill full width on mobile */
-  .right-panel{width:100%}
-
-  /* Smaller toolbar on mobile */
-  .preview-toolbar{padding:0 10px;gap:5px}
-  .vtab{padding:4px 7px;font-size:9px}
-  .tbtn{padding:3px 7px;font-size:8px}
-  .stab{padding:3px 7px}
-
-  /* Hide size tabs on small screens */
-  #sizeWrap{display:none !important}
-
-  /* Bottom generate button easier to tap */
-  .gen-btn{padding:13px}
-}
-
-@media (max-width: 480px) {
-  .topbar{padding:0 12px}
-  .logo-text{font-size:13px}
-  .badge{display:none}
-  .tbtn:nth-child(2){display:none}
-}
-
-/* ── MODAL ── */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(4,6,13,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
 .modal-overlay.show{opacity:1;pointer-events:all}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;width:360px;animation:modalIn 0.25s ease}
-@keyframes modalIn{from{transform:scale(0.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;width:340px}
 .modal h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px}
 .modal input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;margin-bottom:14px}
 .modal input:focus{border-color:rgba(99,255,180,0.4)}
 .modal-btns{display:flex;gap:8px;justify-content:flex-end}
-.mbtn{padding:8px 16px;border-radius:7px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;letter-spacing:0.5px;transition:0.15s}
+.mbtn{padding:8px 16px;border-radius:7px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:0.15s}
 .mbtn-cancel{background:transparent;border:1px solid var(--border);color:var(--muted)}
-.mbtn-cancel:hover{border-color:var(--border-bright);color:var(--text)}
 .mbtn-ok{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#04060d;font-weight:700}
-.mbtn-ok:hover{opacity:0.9;transform:translateY(-1px)}
+
+/* ═══ MOBILE ═══ */
+@media(max-width:768px){
+  .ham-btn{display:flex}
+  .left-panel{
+    position:fixed;top:50px;left:0;bottom:0;
+    transform:translateX(-100%);
+    transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    box-shadow:4px 0 30px rgba(0,0,0,0.5);
+  }
+  .left-panel.open{transform:translateX(0)}
+  .top-mid{flex:1;justify-content:center}
+  .proj-name{max-width:130px}
+  #sizeWrap{display:none!important}
+  .vtab{padding:4px 8px;font-size:9px}
+  .tbtn{padding:3px 6px;font-size:8px}
+}
+@media(max-width:420px){
+  .badge{display:none}
+  .tbtn:nth-child(1){display:none}
+  .topbar{padding:0 12px}
+}
 </style>
 </head>
 <body>
 <div class="blobs"><div class="blob b1"></div><div class="blob b2"></div></div>
 <div class="scanline"></div>
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
 
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
     <button class="ham-btn" id="hamBtn" onclick="togglePanel()">
-      <div class="ham-line"></div>
-      <div class="ham-line"></div>
-      <div class="ham-line"></div>
+      <div class="ham-line"></div><div class="ham-line"></div><div class="ham-line"></div>
     </button>
     <div class="logo-icon">⚡</div>
     <div class="logo-text">AI Builder</div>
   </div>
   <div class="top-mid">
     <div class="proj-name" id="projNameDisplay" onclick="showProjModal()">Untitled Project</div>
-    <div class="status-pill"><div class="sdot idle" id="sdot"></div><span id="sdotTxt">idle</span></div>
+    <div class="status-pill"><div class="sdot" id="sdot"></div><span id="sdotTxt">idle</span></div>
   </div>
   <div class="top-right">
     <div class="badge bg">Groq</div>
@@ -321,23 +293,19 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
   </div>
 </div>
 
-<!-- MOBILE OVERLAY -->
-<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
-
-<!-- APP BODY -->
+<!-- APP -->
 <div class="app-body">
-
   <!-- LEFT PANEL -->
-  <div class="left-panel">
+  <div class="left-panel" id="leftPanel">
     <div class="panel-tabs">
-      <button class="ptab active" onclick="showPanelPage('gen',this)">Generate</button>
+      <button class="ptab active" onclick="showPanelPage('gen',this)">Gen</button>
       <button class="ptab" onclick="showPanelPage('tmpl',this)">Templates</button>
       <button class="ptab" onclick="showPanelPage('chat',this)">Edit</button>
       <button class="ptab" onclick="showPanelPage('proj',this)">Projects</button>
       <button class="ptab" onclick="showPanelPage('ver',this)">Versions</button>
     </div>
 
-    <!-- GENERATE PAGE -->
+    <!-- GENERATE -->
     <div class="panel-page active" id="page-gen">
       <div class="gen-page">
         <div>
@@ -350,13 +318,13 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
             <div class="chip" onclick="useChip(this)">Agency</div>
             <div class="chip" onclick="useChip(this)">Mobile app</div>
             <div class="chip" onclick="useChip(this)">Crypto/Web3</div>
-            <div class="chip" onclick="useChip(this)">Finance app</div>
+            <div class="chip" onclick="useChip(this)">Restaurant</div>
           </div>
         </div>
         <div>
           <div class="slabel">Describe Your Website</div>
           <div class="pw">
-            <textarea id="prompt" placeholder="e.g. A dark cyberpunk SaaS landing page for an AI video editor with neon cyan accents, glassmorphism cards, and smooth animations" oninput="updateChar(this)" maxlength="600"></textarea>
+            <textarea id="prompt" placeholder="e.g. A dark cyberpunk SaaS landing page for an AI video editor with neon accents and smooth animations" oninput="updateChar(this)" maxlength="600"></textarea>
             <div class="cc"><span id="charCount">0</span>/600</div>
           </div>
         </div>
@@ -367,7 +335,7 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
       </div>
     </div>
 
-    <!-- TEMPLATES PAGE -->
+    <!-- TEMPLATES -->
     <div class="panel-page" id="page-tmpl">
       <div class="tmpl-page">
         <input class="tmpl-search" id="tmplSearch" placeholder="🔍 Search templates..." oninput="filterTemplates(this.value)"/>
@@ -376,7 +344,7 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
       </div>
     </div>
 
-    <!-- CHAT EDIT PAGE -->
+    <!-- EDIT -->
     <div class="panel-page" id="page-chat">
       <div class="chat-page">
         <div class="chat-messages" id="chatMessages">
@@ -385,13 +353,13 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
             <div class="chat-empty-txt">Generate a website first,<br>then edit it here</div>
           </div>
         </div>
-        <div class="chat-suggestions" id="chatSuggs">
+        <div class="chat-suggestions">
           <div class="sugg" onclick="useSugg(this)">Change accent to purple</div>
-          <div class="sugg" onclick="useSugg(this)">Make navbar dark</div>
-          <div class="sugg" onclick="useSugg(this)">Add a video section</div>
-          <div class="sugg" onclick="useSugg(this)">Remove pricing section</div>
+          <div class="sugg" onclick="useSugg(this)">Make navbar sticky</div>
+          <div class="sugg" onclick="useSugg(this)">Add video section</div>
+          <div class="sugg" onclick="useSugg(this)">Remove pricing</div>
           <div class="sugg" onclick="useSugg(this)">Make hero bigger</div>
-          <div class="sugg" onclick="useSugg(this)">Add dark mode toggle</div>
+          <div class="sugg" onclick="useSugg(this)">Dark mode toggle</div>
         </div>
         <div class="chat-input-wrap">
           <textarea class="chat-input" id="chatInput" placeholder="e.g. Change the hero headline to..." rows="1" onkeydown="chatKeydown(event)"></textarea>
@@ -400,15 +368,15 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
       </div>
     </div>
 
-    <!-- PROJECTS PAGE -->
+    <!-- PROJECTS -->
     <div class="panel-page" id="page-proj">
       <div class="proj-page" id="projList">
         <button class="new-proj-btn" onclick="createNewProject()">+ New Project</button>
-        <div class="proj-empty" id="projEmpty">No projects yet — generate something!</div>
+        <div class="proj-empty" id="projEmpty">No projects yet</div>
       </div>
     </div>
 
-    <!-- VERSIONS PAGE -->
+    <!-- VERSIONS -->
     <div class="panel-page" id="page-ver">
       <div class="ver-page" id="verList">
         <div class="ver-empty" id="verEmpty">No versions yet</div>
@@ -428,9 +396,9 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
       </div>
       <div class="tc" id="sizeWrap">
         <div class="size-tabs">
-          <button class="stab active" onclick="setDevice('desktop')" id="dev-desktop" title="Desktop">🖥</button>
-          <button class="stab" onclick="setDevice('tablet')" id="dev-tablet" title="Tablet">📱</button>
-          <button class="stab" onclick="setDevice('mobile')" id="dev-mobile" title="Mobile">📲</button>
+          <button class="stab active" onclick="setDevice('desktop')" id="dev-desktop">🖥</button>
+          <button class="stab" onclick="setDevice('tablet')" id="dev-tablet">📱</button>
+          <button class="stab" onclick="setDevice('mobile')" id="dev-mobile">📲</button>
         </div>
       </div>
       <div class="tr">
@@ -441,10 +409,9 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
     </div>
     <div class="browser-bar">
       <div class="bdots"><div class="bd bd-r"></div><div class="bd bd-y"></div><div class="bd bd-g"></div></div>
-      <div class="urlbar"><span class="ulock">🔒</span><span class="utxt">localhost / preview</span></div>
+      <div class="urlbar"><span class="ulock">🔒</span><span class="utxt">preview</span></div>
     </div>
     <div class="content-area">
-      <!-- PREVIEW -->
       <div class="preview-panel" id="previewPanel">
         <div class="dev-frame desktop" id="devFrame">
           <div class="empty-state" id="emptyState">
@@ -457,11 +424,10 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
         </div>
         <div class="sovlay" id="sovlay">
           <div class="sring"></div>
-          <span id="sovlayTxt">Streaming</span>
+          <span id="sovlayTxt">Generating</span>
           <span style="font-size:10px;color:var(--muted)" id="streamChars">0 chars</span>
         </div>
       </div>
-      <!-- EDITOR -->
       <div class="editor-panel" id="editorPanel">
         <div class="etopbar">
           <span class="efname">index.html</span>
@@ -470,22 +436,21 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
             <button class="ebtn" onclick="formatEditor()">⌥ Format</button>
           </div>
         </div>
-        <div id="monacoMain" style="flex:1;overflow:hidden"></div>
+        <div id="monacoMain" style="flex:1;overflow:hidden;height:100%"></div>
       </div>
-      <!-- SPLIT -->
       <div class="split-panel" id="splitPanel">
         <div class="split-prev" id="splitPrev"><iframe id="splitFrame" srcdoc="" style="width:100%;height:100%;border:none"></iframe></div>
         <div class="rhandle" id="rhandle"></div>
         <div class="split-ed">
           <div class="etopbar"><span class="efname">split view</span><div class="eactions"><button class="ebtn" onclick="applySplit()">▶ Apply</button></div></div>
-          <div id="monacoSplit" style="flex:1;overflow:hidden"></div>
+          <div id="monacoSplit" style="flex:1;overflow:hidden;height:100%"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- PROJECT NAME MODAL -->
+<!-- MODAL -->
 <div class="modal-overlay" id="projModal">
   <div class="modal">
     <h3>Project Name</h3>
@@ -498,43 +463,14 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// Load Monaco only on desktop
-// ─────────────────────────────────────────────
-const IS_MOBILE = window.innerWidth <= 768;
-
-if (!IS_MOBILE) {
-  const loaderScript = document.createElement('script');
-  loaderScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
-  loaderScript.onload = () => {
-    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
-    require(['vs/editor/editor.main'], function () {
-      monacoReady = true;
-      const opts = {
-        language:'html', theme:'vs-dark', fontFamily:"'JetBrains Mono',monospace",
-        scrollBeyondLastLine:false, automaticLayout:true, minimap:{enabled:true},
-        padding:{top:10}, smoothScrolling:true, cursorBlinking:'smooth'
-      };
-      monacoMain  = monaco.editor.create(document.getElementById('monacoMain'),  { ...opts, fontSize:12, value:'<!-- Generate a website to see code -->' });
-      monacoSplit = monaco.editor.create(document.getElementById('monacoSplit'), { ...opts, fontSize:11, minimap:{enabled:false}, value:'<!-- Generate a website to see code -->' });
-    });
-  };
-  document.head.appendChild(loaderScript);
-} else {
-  // Mobile: use simple textarea editors
-  document.getElementById('monacoMain').innerHTML  = '<textarea id="mobileEditor" style="width:100%;height:100%;background:#0d1424;color:#e8eaf0;border:none;outline:none;padding:12px;font-family:monospace;font-size:11px;resize:none;line-height:1.6"><!-- Generate a website to see code --></textarea>';
-  document.getElementById('monacoSplit').innerHTML = '<textarea id="mobileSplitEditor" style="width:100%;height:100%;background:#0d1424;color:#e8eaf0;border:none;outline:none;padding:12px;font-family:monospace;font-size:11px;resize:none;line-height:1.6"><!-- Generate a website to see code --></textarea>';
-}
-</script>
-<script>
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 // CONFIG
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 const API_BASE = '';
 
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 // STATE
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 let lastCode = '';
 let monacoMain = null, monacoSplit = null, monacoReady = false;
 let currentView = 'preview', currentDevice = 'desktop';
@@ -543,39 +479,61 @@ let projects = JSON.parse(localStorage.getItem('aib_projects') || '[]');
 let currentProjectId = localStorage.getItem('aib_current') || null;
 let versions = [];
 let currentVersionIdx = -1;
+const IS_MOBILE = window.innerWidth <= 768;
 
-// Mobile editor helpers
-function getMobileEditorValue() {
+// ═══════════════════════════════════════════════
+// MONACO — desktop only
+// ═══════════════════════════════════════════════
+function initMonaco() {
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
+  script.onload = () => {
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+    require(['vs/editor/editor.main'], () => {
+      monacoReady = true;
+      const opts = { language:'html', theme:'vs-dark', fontFamily:"'JetBrains Mono',monospace", scrollBeyondLastLine:false, automaticLayout:true, minimap:{enabled:true}, padding:{top:10}, smoothScrolling:true, cursorBlinking:'smooth' };
+      monacoMain  = monaco.editor.create(document.getElementById('monacoMain'),  { ...opts, fontSize:12, value:'<!-- Generate a website to see code -->' });
+      monacoSplit = monaco.editor.create(document.getElementById('monacoSplit'), { ...opts, fontSize:11, minimap:{enabled:false}, value:'<!-- Generate a website to see code -->' });
+    });
+  };
+  document.head.appendChild(script);
+}
+
+function initMobileEditors() {
+  const style = 'width:100%;height:100%;background:#0d1424;color:#e8eaf0;border:none;outline:none;padding:12px;font-family:monospace;font-size:11px;resize:none;line-height:1.6;box-sizing:border-box';
+  document.getElementById('monacoMain').innerHTML  = `<textarea id="mobileEditor" style="${style}"><!-- Generate a website to see code --></textarea>`;
+  document.getElementById('monacoSplit').innerHTML = `<textarea id="mobileSplitEditor" style="${style}"><!-- Generate a website to see code --></textarea>`;
+}
+
+function setEditorValue(val) {
+  if (monacoReady) {
+    monacoMain.setValue(val);
+    monacoSplit.setValue(val);
+  } else {
+    const a = document.getElementById('mobileEditor');
+    const b = document.getElementById('mobileSplitEditor');
+    if (a) a.value = val;
+    if (b) b.value = val;
+  }
+}
+
+function getEditorValue() {
+  if (monacoReady) return monacoMain.getValue();
   const el = document.getElementById('mobileEditor');
   return el ? el.value : '';
 }
-function setMobileEditorValue(val) {
-  const el = document.getElementById('mobileEditor');
-  if (el) el.value = val;
-  const el2 = document.getElementById('mobileSplitEditor');
-  if (el2) el2.value = val;
-}
-function setEditorValue(val) {
-  if (monacoReady) { monacoMain.setValue(val); monacoSplit.setValue(val); }
-  else setMobileEditorValue(val);
-}
 
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 // UI HELPERS
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 function useChip(el) {
   const ta = document.getElementById('prompt');
   ta.value = el.textContent;
   updateChar(ta);
   ta.focus();
 }
-function updateChar(el) {
-  document.getElementById('charCount').textContent = el.value.length;
-}
-function useSugg(el) {
-  document.getElementById('chatInput').value = el.textContent;
-  document.getElementById('chatInput').focus();
-}
+function updateChar(el) { document.getElementById('charCount').textContent = el.value.length; }
+function useSugg(el) { document.getElementById('chatInput').value = el.textContent; document.getElementById('chatInput').focus(); }
 
 function setStatus(type, msg) {
   const dot  = document.getElementById('sdot');
@@ -584,17 +542,11 @@ function setStatus(type, msg) {
   const smsg = document.getElementById('sbarMsg');
   dot.className = 'sdot';
   sbar.className = 'sbar';
-  const m = {
-    idle:    { d:'idle',    t:'idle',      s:''    },
-    loading: { d:'working', t:'streaming', s:'ok'  },
-    editing: { d:'working', t:'editing',   s:'warn'},
-    done:    { d:'done',    t:'done',      s:'ok'  },
-    error:   { d:'err',     t:'error',     s:'bad' }
-  };
+  const m = { idle:{d:'',t:'idle',s:''}, loading:{d:'working',t:'streaming',s:'ok'}, editing:{d:'working',t:'editing',s:'warn'}, done:{d:'done',t:'done',s:'ok'}, error:{d:'err',t:'error',s:'bad'} };
   const r = m[type] || m.idle;
-  dot.classList.add(r.d);
+  if(r.d) dot.classList.add(r.d);
   txt.textContent = r.t;
-  if (r.s) sbar.classList.add(r.s);
+  if(r.s) sbar.classList.add(r.s);
   smsg.textContent = msg;
 }
 
@@ -602,133 +554,139 @@ function addChatMsg(role, text) {
   const empty = document.getElementById('chatEmpty');
   if (empty) empty.style.display = 'none';
   const msgs = document.getElementById('chatMessages');
-  const now = new Date();
-  const t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   const div = document.createElement('div');
-  div.className = 'msg msg-' + role + (role === 'ai' && text === null ? ' typing' : '');
-  div.innerHTML = `<div class="msg-bubble">${text || 'Editing...'}</div><div class="msg-time">${t}</div>`;
+  div.className = 'msg msg-' + role + (role==='ai' && text===null ? ' typing' : '');
+  div.innerHTML = `<div class="msg-bubble">${text||'Editing...'}</div><div class="msg-time">${t}</div>`;
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
   return div;
 }
 
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
+// MOBILE PANEL
+// ═══════════════════════════════════════════════
+function togglePanel() {
+  const panel = document.getElementById('leftPanel');
+  const overlay = document.getElementById('panelOverlay');
+  const btn = document.getElementById('hamBtn');
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  overlay.classList.toggle('show', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+function closePanel() {
+  document.getElementById('leftPanel').classList.remove('open');
+  document.getElementById('panelOverlay').classList.remove('show');
+  document.getElementById('hamBtn').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════
+// PANEL TABS
+// ═══════════════════════════════════════════════
+function showPanelPage(name, btn) {
+  document.querySelectorAll('.panel-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    const tabs = {gen:0,tmpl:1,chat:2,proj:3,ver:4};
+    document.querySelectorAll('.ptab')[tabs[name]||0].classList.add('active');
+  }
+}
+
+// ═══════════════════════════════════════════════
 // GENERATE
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 async function generate() {
   if (isGenerating) return;
   const prompt = document.getElementById('prompt').value.trim();
-  if (!prompt) { setStatus('error', 'Enter a prompt first!'); return; }
+  if (!prompt) { setStatus('error','Enter a prompt first!'); return; }
 
-  const btn        = document.getElementById('genBtn');
-  const btnTxt     = document.getElementById('btnTxt');
-  const sovlay     = document.getElementById('sovlay');
-  const schars     = document.getElementById('streamChars');
+  const btn = document.getElementById('genBtn');
+  const sovlay = document.getElementById('sovlay');
+  const schars = document.getElementById('streamChars');
   const emptyState = document.getElementById('emptyState');
 
   isGenerating = true;
   btn.classList.add('loading');
   btn.disabled = true;
-  btnTxt.textContent = 'Generating...';
+  document.getElementById('btnTxt').textContent = 'Generating...';
   sovlay.classList.add('show');
-  document.getElementById('sovlayTxt').textContent = 'Generating';
   schars.textContent = 'Please wait ~15s...';
-  setStatus('loading', 'AI is building your website...');
-  // Auto-close panel on mobile
-  if (window.innerWidth <= 768) closePanel();
+  setStatus('loading','AI is building your site...');
+  if (IS_MOBILE) closePanel();
 
   try {
-    const res  = await fetch(API_BASE + '/generate', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ prompt })
-    });
+    const res  = await fetch(API_BASE + '/generate', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({prompt}) });
     const data = await res.json();
-
     if (!data.success) throw new Error(data.error || 'Generation failed');
-
     const html = data.html;
-    lastCode   = html;
+    lastCode = html;
     document.getElementById('mainFrame').srcdoc  = html;
     document.getElementById('splitFrame').srcdoc = html;
     emptyState.classList.add('gone');
-    if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
-    else setMobileEditorValue(html);
-    setStatus('done', `Done! ${html.length.toLocaleString()} chars`);
+    setEditorValue(html);
+    setStatus('done',`Done! ${html.length.toLocaleString()} chars`);
     schars.textContent = html.length.toLocaleString() + ' chars';
     addVersion('generate', prompt, html);
     saveCurrentProject(prompt, html);
-
   } catch(err) {
     setStatus('error', err.message || 'Generation failed');
+    schars.textContent = '0 chars';
   }
 
   isGenerating = false;
   btn.classList.remove('loading');
   btn.disabled = false;
-  btnTxt.textContent = 'Generate Website';
+  document.getElementById('btnTxt').textContent = 'Generate Website';
   sovlay.classList.remove('show');
 }
 
-// ─────────────────────────────────────────────
-// CHAT EDIT
-// ─────────────────────────────────────────────
-function chatKeydown(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendEdit(); }
-}
+// ═══════════════════════════════════════════════
+// SEND EDIT
+// ═══════════════════════════════════════════════
+function chatKeydown(e) { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); sendEdit(); } }
 
 async function sendEdit() {
   if (isGenerating) return;
-  if (!lastCode) {
-    setStatus('error', 'Generate a website first!');
-    showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
-    return;
-  }
-  const input       = document.getElementById('chatInput');
+  if (!lastCode) { setStatus('error','Generate a website first!'); showPanelPage('gen', document.querySelectorAll('.ptab')[0]); return; }
+  const input = document.getElementById('chatInput');
   const instruction = input.value.trim();
   if (!instruction) return;
-
   input.value = '';
   addChatMsg('user', instruction);
   const aiMsgEl = addChatMsg('ai', null);
-
-  const btn    = document.getElementById('chatSendBtn');
+  const btn = document.getElementById('chatSendBtn');
   const sovlay = document.getElementById('sovlay');
-  const schars = document.getElementById('streamChars');
 
   isGenerating = true;
   btn.disabled = true;
   sovlay.classList.add('show');
   document.getElementById('sovlayTxt').textContent = 'Editing';
-  schars.textContent = 'Please wait...';
-  setStatus('editing', 'Applying edit...');
+  document.getElementById('streamChars').textContent = 'Please wait...';
+  setStatus('editing','Applying edit...');
+  if (IS_MOBILE) closePanel();
 
   try {
-    const res  = await fetch(API_BASE + '/edit', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ html: lastCode, instruction })
-    });
+    const res  = await fetch(API_BASE + '/edit', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({html:lastCode, instruction}) });
     const data = await res.json();
-
     if (!data.success) throw new Error(data.error || 'Edit failed');
-
     const html = data.html;
-    lastCode   = html;
+    lastCode = html;
     document.getElementById('mainFrame').srcdoc  = html;
     document.getElementById('splitFrame').srcdoc = html;
-    if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
-    else setMobileEditorValue(html);
+    setEditorValue(html);
+    aiMsgEl.classList.remove('typing');
     aiMsgEl.querySelector('.msg-bubble').textContent = '✓ Done! ' + instruction;
-    setStatus('done', 'Edit applied!');
-    schars.textContent = html.length.toLocaleString() + ' chars';
+    setStatus('done','Edit applied!');
+    document.getElementById('streamChars').textContent = html.length.toLocaleString() + ' chars';
     addVersion('edit', instruction, html);
     saveCurrentProject(null, html);
-
   } catch(err) {
     aiMsgEl.classList.remove('typing');
-    aiMsgEl.querySelector('.msg-bubble').textContent = '❌ ' + (err.message || 'Edit failed');
-    setStatus('error', err.message || 'Edit failed');
+    aiMsgEl.querySelector('.msg-bubble').textContent = '❌ ' + (err.message||'Edit failed');
+    setStatus('error', err.message||'Edit failed');
   }
 
   isGenerating = false;
@@ -736,59 +694,31 @@ async function sendEdit() {
   sovlay.classList.remove('show');
 }
 
-// ─────────────────────────────────────────────
-// TEMPLATE GALLERY
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
+// TEMPLATES
+// ═══════════════════════════════════════════════
 const TEMPLATES = [
-  { icon:'🚀', name:'SaaS Landing', tag:'popular',
-    desc:'Dark animated SaaS product page with pricing, features & testimonials.',
-    prompt:'A dark SaaS landing page for an AI-powered project management tool called "FlowAI". Use deep navy background, electric blue accents, glassmorphism cards, animated stats showing 50K users, 99.9% uptime, 10x faster. Include features section, 3-tier pricing, and testimonials.' },
-  { icon:'🤖', name:'AI Startup', tag:'hot',
-    desc:'Futuristic AI company website with glowing orbs and neural network vibes.',
-    prompt:'A futuristic AI startup landing page for "NeuralForge" — a company building next-gen AI models. Use pitch black background with electric purple and cyan accents. Show capabilities like image generation, NLP, and code synthesis. Add glowing orbs, particle effects, floating cards.' },
-  { icon:'🎨', name:'Creative Portfolio', tag:'popular',
-    desc:'Minimal elegant portfolio for designers and developers.',
-    prompt:'A stunning minimal portfolio website for a senior UI/UX designer named Alex Chen. Use off-white background with bold black typography and a single yellow accent. Show case studies as large full-width cards. Include about, skills, selected work, and contact sections.' },
-  { icon:'🛍️', name:'E-commerce', tag:'new',
-    desc:'Premium online store with product showcases and cart flow.',
-    prompt:'A premium e-commerce landing page for a luxury streetwear brand called "VOID" — minimalist dark design, white text, red accents. Show featured drops, new arrivals grid, brand story. Include size guide, testimonials, and newsletter signup. Edgy high-fashion aesthetic.' },
-  { icon:'🍕', name:'Restaurant', tag:'',
-    desc:'Elegant restaurant website with menu and reservation flow.',
-    prompt:'An upscale restaurant website for "Ember & Oak" — a modern steakhouse. Warm dark brown background, golden amber accents, beautiful food photography. Include hero with reservation CTA, menu sections, chef story, gallery, and contact with location.' },
-  { icon:'💼', name:'Agency', tag:'popular',
-    desc:'Bold creative agency site with case studies and services.',
-    prompt:'A bold creative agency website for "APEX Studio" — a branding and digital agency. Use deep black with vivid gradient accents purple to orange. Showcase services: branding, web design, motion. Add client logos, case study cards, team section, and a Start a project CTA.' },
-  { icon:'📱', name:'Mobile App', tag:'hot',
-    desc:'App landing page with device mockups and download CTAs.',
-    prompt:'A slick mobile app landing page for "Pulse" — a habit tracking app. Use dark background with vibrant green accents. Show app screenshots in phone mockups, feature list with icons, how it works in 3 steps, user reviews, and App Store Google Play download buttons.' },
-  { icon:'💎', name:'Crypto / Web3', tag:'new',
-    desc:'NFT or crypto project with wallet connect and tokenomics.',
-    prompt:'A Web3 NFT collection landing page for "GENESIS" — 10000 unique digital entities. Use pitch black with neon green and electric blue accents. Show collection preview grid, mint countdown timer, tokenomics chart, roadmap, team section, and FAQ. Add glitch effects.' },
-  { icon:'🏋️', name:'Fitness / Health', tag:'',
-    desc:'Energetic gym or wellness brand with transformation stories.',
-    prompt:'A high-energy fitness brand website for "IRON CULT" — an elite gym chain. Use dark charcoal background with bold red and white accents. Show transformation before/after stories, class schedule, membership pricing tiers, trainer profiles, and a free trial signup CTA.' },
-  { icon:'🎮', name:'Gaming / Esports', tag:'hot',
-    desc:'Intense gaming or esports team website with live stats.',
-    prompt:'An esports team website for "PHANTOM FIVE" — a professional CS2 squad. Use dark background with electric cyan and purple accents. Include player cards with stats, tournament history, match schedule, sponsors section, fan shop, and a team recruitment form.' },
-  { icon:'🏠', name:'Real Estate', tag:'',
-    desc:'Luxury property listings with virtual tours and agent contact.',
-    prompt:'A luxury real estate agency website for "Pinnacle Properties". Use elegant dark navy background with gold accents. Show featured property listings as large cards with price tags, neighborhood map, agent profiles, testimonials from buyers, and Schedule Viewing CTA.' },
-  { icon:'🎵', name:'Music / Artist', tag:'new',
-    desc:'Artist or band website with discography and tour dates.',
-    prompt:'A music artist website for "NOVA" — a synthwave electronic artist. Use dark background with neon pink and purple gradients. Show latest album with tracklist, upcoming tour dates, music video section, merchandise store preview, press quotes, and newsletter signup.' },
-  { icon:'📊', name:'Finance / Fintech', tag:'',
-    desc:'Clean fintech dashboard landing with trust signals and features.',
-    prompt:'A fintech app landing page for "Vault" — a smart personal finance platform. Use dark slate background with emerald green accents. Show live portfolio graph mockup, features like AI spending insights, auto-investing, bill tracking. Add security badges and 3-tier pricing.' },
-  { icon:'🎓', name:'EdTech / Course', tag:'popular',
-    desc:'Online learning platform with course previews and instructor profiles.',
-    prompt:'An online learning platform landing page for "SkillForge" — tech courses for developers. Use dark background with vivid orange and yellow accents. Show featured courses as cards, learning path visualization, instructor profiles, student testimonials, and enrollment CTA.' },
+  {icon:'🚀',name:'SaaS Landing',tag:'popular',desc:'Dark animated SaaS page with pricing & testimonials.',prompt:'A dark SaaS landing page for an AI-powered project management tool called "FlowAI". Deep navy background, electric blue accents, glassmorphism cards, animated stats 50K users, 99.9% uptime. Features section, 3-tier pricing, testimonials, smooth GSAP animations.'},
+  {icon:'🤖',name:'AI Startup',tag:'hot',desc:'Futuristic AI company website with glowing orbs.',prompt:'A futuristic AI startup landing page for "NeuralForge" building next-gen AI models. Pitch black background with electric purple and cyan accents. Show image generation, NLP, code synthesis capabilities. Glowing orbs, particle effects, floating cards, GSAP animations.'},
+  {icon:'🎨',name:'Creative Portfolio',tag:'popular',desc:'Minimal elegant portfolio for designers.',prompt:'A stunning minimal portfolio for senior UI/UX designer Alex Chen. Off-white background, bold black typography, single yellow accent. Case studies as large full-width cards. About, skills, selected work, contact sections with smooth scroll animations.'},
+  {icon:'🛍️',name:'E-commerce',tag:'new',desc:'Premium online store with product showcases.',prompt:'A premium e-commerce landing page for luxury streetwear brand "VOID". Minimalist dark design, white text, red accents. Featured drops, new arrivals grid, brand story. Size guide, testimonials, newsletter. Edgy high-fashion aesthetic with GSAP animations.'},
+  {icon:'🍕',name:'Restaurant',tag:'',desc:'Elegant restaurant website with menu and reservations.',prompt:'An upscale restaurant website for "Ember & Oak" steakhouse. Warm dark brown background, golden amber accents. Hero with reservation CTA, menu sections, chef story, gallery, contact. Beautiful food photography, smooth scroll animations.'},
+  {icon:'💼',name:'Agency',tag:'popular',desc:'Bold creative agency with case studies.',prompt:'A bold creative agency website for "APEX Studio" — branding and digital agency. Deep black with vivid purple to orange gradients. Services: branding, web design, motion. Client logos, case study cards, team section, Start a project CTA. Magnetic buttons, GSAP.'},
+  {icon:'📱',name:'Mobile App',tag:'hot',desc:'App landing page with device mockups.',prompt:'A slick mobile app landing page for "Pulse" — habit tracking app. Dark background, vibrant green accents. App screenshots in phone mockups, features with icons, how it works 3 steps, reviews, App Store and Google Play buttons. GSAP scroll animations.'},
+  {icon:'💎',name:'Crypto / Web3',tag:'new',desc:'NFT project with tokenomics and roadmap.',prompt:'A Web3 NFT collection landing page for "GENESIS" — 10000 unique digital entities. Pitch black with neon green and electric blue accents. Collection preview grid, mint countdown timer, tokenomics, roadmap, team, FAQ. Glitch effects, matrix animations.'},
+  {icon:'🏋️',name:'Fitness',tag:'',desc:'Energetic gym brand with transformation stories.',prompt:'High-energy fitness brand website for "IRON CULT" elite gym chain. Dark charcoal background, bold red and white accents. Transformation stories, class schedule, membership pricing, trainer profiles, free trial CTA. Dynamic GSAP scroll animations.'},
+  {icon:'🎮',name:'Gaming / Esports',tag:'hot',desc:'Intense esports team website.',prompt:'Esports team website for "PHANTOM FIVE" — professional CS2 squad. Dark background, electric cyan and purple accents. Player cards with stats, tournament history, match schedule, sponsors, fan shop, recruitment form. Particle effects, intense typography.'},
+  {icon:'🏠',name:'Real Estate',tag:'',desc:'Luxury property listings with agent profiles.',prompt:'Luxury real estate agency "Pinnacle Properties". Dark navy background, gold accents. Featured property listings as large cards with prices, neighborhood map, agent profiles, testimonials, Schedule Viewing CTA. Elegant animations and typography.'},
+  {icon:'🎵',name:'Music Artist',tag:'new',desc:'Artist website with discography and tour dates.',prompt:'Music artist website for "NOVA" synthwave electronic artist. Dark background, neon pink and purple gradients. Latest album with tracklist, tour dates, music video section, merch store preview, press quotes, newsletter signup. Neon glow effects.'},
+  {icon:'📊',name:'Fintech',tag:'',desc:'Clean fintech dashboard landing page.',prompt:'Fintech app landing page for "Vault" — smart personal finance platform. Dark slate background, emerald green accents. Live portfolio graph mockup, AI spending insights, auto-investing, bill tracking features. Security badges, bank logos, 3-tier pricing.'},
+  {icon:'🎓',name:'EdTech',tag:'popular',desc:'Online learning platform with course previews.',prompt:'Online learning platform "SkillForge" — tech courses for developers. Dark background, vivid orange and yellow accents. Featured courses as cards, learning path visualization, instructor profiles, student testimonials, enrollment CTA. Smooth GSAP animations.'},
 ];
 
 function renderTemplates(list) {
-  const grid  = document.getElementById('tmplGrid');
+  const grid = document.getElementById('tmplGrid');
   const empty = document.getElementById('tmplEmpty');
   grid.innerHTML = '';
-  if (list.length === 0) { empty.style.display = 'block'; return; }
+  if (!list.length) { empty.style.display='block'; return; }
   empty.style.display = 'none';
   list.forEach((t, i) => {
     const card = document.createElement('div');
@@ -807,64 +737,48 @@ function renderTemplates(list) {
     grid.appendChild(card);
   });
 }
-
 function filterTemplates(q) {
-  const filtered = TEMPLATES.filter(t =>
-    t.name.toLowerCase().includes(q.toLowerCase()) ||
-    t.desc.toLowerCase().includes(q.toLowerCase())
-  );
-  renderTemplates(filtered);
+  renderTemplates(TEMPLATES.filter(t => t.name.toLowerCase().includes(q.toLowerCase()) || t.desc.toLowerCase().includes(q.toLowerCase())));
 }
-
 function useTemplate(i) {
   const t = TEMPLATES[i];
   document.getElementById('prompt').value = t.prompt;
   updateChar(document.getElementById('prompt'));
   showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
 }
-
 function instantGenerate(i) {
-  const t = TEMPLATES[i];
-  document.getElementById('prompt').value = t.prompt;
-  updateChar(document.getElementById('prompt'));
-  showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
-  setTimeout(() => generate(), 150);
+  useTemplate(i);
+  setTimeout(generate, 150);
 }
 
-// ─────────────────────────────────────────────
-// VERSION HISTORY
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
+// VERSIONS
+// ═══════════════════════════════════════════════
 function addVersion(type, prompt, html) {
-  const ver = {
-    id: Date.now(), type, prompt, html,
-    time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })
-  };
-  versions.unshift(ver);
+  versions.unshift({ id:Date.now(), type, prompt, html, time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) });
   currentVersionIdx = 0;
   renderVersions();
 }
-
 function renderVersions() {
-  const list  = document.getElementById('verList');
+  const list = document.getElementById('verList');
   const empty = document.getElementById('verEmpty');
-  if (versions.length === 0) { empty.style.display = 'block'; return; }
+  if (!versions.length) { empty.style.display='block'; return; }
   empty.style.display = 'none';
   Array.from(list.children).forEach(c => { if (!c.classList.contains('ver-empty')) c.remove(); });
   versions.forEach((v, i) => {
     const card = document.createElement('div');
-    card.className = 'ver-card' + (i === currentVersionIdx ? ' current-ver' : '');
+    card.className = 'ver-card' + (i===currentVersionIdx?' current-ver':'');
     card.innerHTML = `
       <div class="ver-head">
-        <span class="ver-num">v${versions.length - i}</span>
-        <span class="ver-type ${v.type}">${v.type === 'generate' ? 'Generate' : 'Edit'}</span>
+        <span class="ver-num">v${versions.length-i}</span>
+        <span class="ver-type ${v.type}">${v.type==='generate'?'Gen':'Edit'}</span>
         <span class="ver-time">${v.time}</span>
       </div>
-      <div class="ver-prompt">${v.prompt.substring(0,50)}${v.prompt.length > 50 ? '…' : ''}</div>
-      <button class="ver-restore-btn" onclick="restoreVersion(${i})">↩ Restore this version</button>`;
+      <div class="ver-prompt">${v.prompt.substring(0,50)}${v.prompt.length>50?'…':''}</div>
+      <button class="ver-restore-btn" onclick="restoreVersion(${i})">↩ Restore</button>`;
     list.insertBefore(card, list.querySelector('.ver-empty'));
   });
 }
-
 function restoreVersion(idx) {
   const ver = versions[idx];
   if (!ver) return;
@@ -872,275 +786,187 @@ function restoreVersion(idx) {
   currentVersionIdx = idx;
   document.getElementById('mainFrame').srcdoc  = lastCode;
   document.getElementById('splitFrame').srcdoc = lastCode;
-  if (monacoReady) { monacoMain.setValue(lastCode); monacoSplit.setValue(lastCode); }
-  else setMobileEditorValue(lastCode);
+  setEditorValue(lastCode);
   document.getElementById('emptyState').classList.add('gone');
-  setStatus('done', `Restored to v${versions.length - idx}`);
+  setStatus('done', `Restored v${versions.length-idx}`);
   renderVersions();
 }
 
-// ─────────────────────────────────────────────
-// PROJECT SYSTEM
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
+// PROJECTS
+// ═══════════════════════════════════════════════
 function saveProjects() { localStorage.setItem('aib_projects', JSON.stringify(projects)); }
-
 function saveCurrentProject(prompt, html) {
   if (!currentProjectId) {
-    const id   = 'proj_' + Date.now();
-    const name = prompt ? prompt.substring(0,30) + (prompt.length > 30 ? '…' : '') : 'Untitled Project';
-    projects.unshift({ id, name, html, prompt: prompt || '', versions: versions.length, updated: new Date().toLocaleString() });
+    const id = 'p_' + Date.now();
+    const name = prompt ? prompt.substring(0,30)+(prompt.length>30?'…':'') : 'Untitled';
+    projects.unshift({id, name, html, prompt:prompt||'', versions:versions.length, updated:new Date().toLocaleString()});
     currentProjectId = id;
     localStorage.setItem('aib_current', id);
     document.getElementById('projNameDisplay').textContent = name;
   } else {
-    const p = projects.find(p => p.id === currentProjectId);
-    if (p) { p.html = html; p.versions = versions.length; p.updated = new Date().toLocaleString(); }
+    const p = projects.find(p=>p.id===currentProjectId);
+    if (p) { p.html=html; p.versions=versions.length; p.updated=new Date().toLocaleString(); }
   }
   saveProjects();
   renderProjects();
 }
-
 function renderProjects() {
-  const list  = document.getElementById('projList');
+  const list = document.getElementById('projList');
   const empty = document.getElementById('projEmpty');
-  Array.from(list.children).forEach(c => { if (c.classList.contains('proj-card')) c.remove(); });
-  if (projects.length === 0) { empty.style.display = 'block'; return; }
+  Array.from(list.children).forEach(c => { if(c.classList.contains('proj-card')) c.remove(); });
+  if (!projects.length) { empty.style.display='block'; return; }
   empty.style.display = 'none';
   projects.forEach(p => {
     const card = document.createElement('div');
-    card.className = 'proj-card' + (p.id === currentProjectId ? ' current' : '');
+    card.className = 'proj-card' + (p.id===currentProjectId?' current':'');
     card.innerHTML = `
       <div class="proj-card-name">${p.name}</div>
-      <div class="proj-card-meta"><span>${p.versions || 0} versions</span><span>${p.updated || ''}</span></div>
+      <div class="proj-card-meta"><span>${p.versions||0} versions</span><span>${p.updated||''}</span></div>
       <button class="proj-card-del" onclick="deleteProject(event,'${p.id}')">✕</button>`;
-    card.onclick = (e) => { if (!e.target.classList.contains('proj-card-del')) loadProject(p.id); };
+    card.onclick = e => { if(!e.target.classList.contains('proj-card-del')) loadProject(p.id); };
     list.insertBefore(card, empty);
   });
 }
-
 function loadProject(id) {
-  const p = projects.find(p => p.id === id);
-  if (!p || !p.html) return;
+  const p = projects.find(p=>p.id===id);
+  if (!p||!p.html) return;
   currentProjectId = id;
   localStorage.setItem('aib_current', id);
   lastCode = p.html;
   versions = [];
   document.getElementById('mainFrame').srcdoc  = lastCode;
   document.getElementById('splitFrame').srcdoc = lastCode;
-  if (monacoReady) { monacoMain.setValue(lastCode); monacoSplit.setValue(lastCode); }
-  else setMobileEditorValue(lastCode);
+  setEditorValue(lastCode);
   document.getElementById('emptyState').classList.add('gone');
   document.getElementById('projNameDisplay').textContent = p.name;
-  addVersion('generate', p.prompt || p.name, p.html);
-  setStatus('done', 'Project loaded: ' + p.name);
+  addVersion('generate', p.prompt||p.name, p.html);
+  setStatus('done','Loaded: '+p.name);
   renderProjects();
 }
-
 function deleteProject(e, id) {
   e.stopPropagation();
-  projects = projects.filter(p => p.id !== id);
-  if (currentProjectId === id) { currentProjectId = null; localStorage.removeItem('aib_current'); }
+  projects = projects.filter(p=>p.id!==id);
+  if (currentProjectId===id) { currentProjectId=null; localStorage.removeItem('aib_current'); }
   saveProjects();
   renderProjects();
 }
-
 function createNewProject() {
   currentProjectId = null;
   localStorage.removeItem('aib_current');
-  lastCode = ''; versions = []; currentVersionIdx = -1;
+  lastCode=''; versions=[]; currentVersionIdx=-1;
   document.getElementById('mainFrame').srcdoc  = '';
   document.getElementById('splitFrame').srcdoc = '';
   document.getElementById('emptyState').classList.remove('gone');
   document.getElementById('projNameDisplay').textContent = 'Untitled Project';
-  if (monacoReady) { monacoMain.setValue('<!-- New project -->'); monacoSplit.setValue('<!-- New project -->'); }
-  setStatus('idle', 'New project created');
+  setEditorValue('<!-- New project -->');
+  setStatus('idle','New project created');
   renderProjects();
   showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
 }
 
-// PROJECT NAME MODAL
-function showProjModal() {
-  document.getElementById('projNameInput').value = document.getElementById('projNameDisplay').textContent;
-  document.getElementById('projModal').classList.add('show');
-  document.getElementById('projNameInput').focus();
-}
+// PROJECT MODAL
+function showProjModal() { document.getElementById('projNameInput').value=document.getElementById('projNameDisplay').textContent; document.getElementById('projModal').classList.add('show'); document.getElementById('projNameInput').focus(); }
 function closeProjModal() { document.getElementById('projModal').classList.remove('show'); }
 function saveProjName() {
-  const name = document.getElementById('projNameInput').value.trim() || 'Untitled Project';
+  const name = document.getElementById('projNameInput').value.trim()||'Untitled Project';
   document.getElementById('projNameDisplay').textContent = name;
-  if (currentProjectId) {
-    const p = projects.find(p => p.id === currentProjectId);
-    if (p) p.name = name;
-    saveProjects();
-    renderProjects();
-  }
+  if (currentProjectId) { const p=projects.find(p=>p.id===currentProjectId); if(p) p.name=name; saveProjects(); renderProjects(); }
   closeProjModal();
 }
-document.getElementById('projModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('projModal')) closeProjModal();
-});
-document.getElementById('projNameInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') saveProjName();
-});
+document.getElementById('projModal').addEventListener('click', e => { if(e.target===document.getElementById('projModal')) closeProjModal(); });
+document.getElementById('projNameInput').addEventListener('keydown', e => { if(e.key==='Enter') saveProjName(); });
 
-// ─────────────────────────────────────────────
-// MOBILE PANEL TOGGLE
-// ─────────────────────────────────────────────
-function togglePanel() {
-  const panel   = document.querySelector('.left-panel');
-  const overlay = document.getElementById('panelOverlay');
-  const btn     = document.getElementById('hamBtn');
-  const isOpen  = panel.classList.contains('mobile-open');
-  if (isOpen) {
-    panel.classList.remove('mobile-open');
-    overlay.classList.remove('show');
-    btn.classList.remove('open');
-  } else {
-    panel.classList.add('mobile-open');
-    overlay.classList.add('show');
-    btn.classList.add('open');
-  }
-}
-
-function closePanel() {
-  document.querySelector('.left-panel').classList.remove('mobile-open');
-  document.getElementById('panelOverlay').classList.remove('show');
-  document.getElementById('hamBtn').classList.remove('open');
-}
-
-// Close panel when a tab is clicked on mobile
-function showPanelPage(name, btn) {
-  document.querySelectorAll('.panel-page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  if (btn) {
-    btn.classList.add('active');
-  } else {
-    const tabs = { gen:0, tmpl:1, chat:2, proj:3, ver:4 };
-    document.querySelectorAll('.ptab')[tabs[name] || 0].classList.add('active');
-  }
-  // Auto-close on mobile after tab switch (except when switching between tabs)
-  if (window.innerWidth <= 768 && (name === 'gen' || name === 'tmpl')) {
-    // keep open so user can interact
-  }
-}
-
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 // VIEW & DEVICE
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 function setView(v) {
   currentView = v;
-  const pp = document.getElementById('previewPanel');
-  const ep = document.getElementById('editorPanel');
-  const sp = document.getElementById('splitPanel');
-  const sw = document.getElementById('sizeWrap');
-  pp.style.display = 'none';
-  ep.style.display = 'none'; ep.classList.remove('vis');
-  sp.style.display = 'none'; sp.classList.remove('vis');
-  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
-  document.getElementById('vtab-' + v).classList.add('active');
-  if      (v === 'preview') { pp.style.display = 'flex'; sw.style.display = 'flex'; }
-  else if (v === 'editor')  { ep.style.display = 'flex'; ep.classList.add('vis'); sw.style.display = 'none'; if (monacoReady) setTimeout(() => monacoMain.layout(), 50); }
-  else if (v === 'split')   { sp.style.display = 'flex'; sp.classList.add('vis');  sw.style.display = 'none'; if (lastCode) document.getElementById('splitFrame').srcdoc = lastCode; setTimeout(() => { if (monacoReady) monacoSplit.layout(); }, 50); }
+  const pp=document.getElementById('previewPanel'), ep=document.getElementById('editorPanel'), sp=document.getElementById('splitPanel');
+  pp.style.display='none'; ep.style.display='none'; ep.classList.remove('vis'); sp.style.display='none'; sp.classList.remove('vis');
+  document.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('vtab-'+v).classList.add('active');
+  document.getElementById('sizeWrap').style.display = v==='preview' ? 'flex' : 'none';
+  if      (v==='preview') { pp.style.display='flex'; }
+  else if (v==='editor')  { ep.style.display='flex'; ep.classList.add('vis'); if(monacoReady) setTimeout(()=>monacoMain.layout(),50); }
+  else if (v==='split')   { sp.style.display='flex'; sp.classList.add('vis'); if(lastCode) document.getElementById('splitFrame').srcdoc=lastCode; setTimeout(()=>{if(monacoReady) monacoSplit.layout();},50); }
 }
-
 function setDevice(d) {
   currentDevice = d;
-  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
-  document.getElementById('dev-' + d).classList.add('active');
-  const df = document.getElementById('devFrame');
-  const pp = document.getElementById('previewPanel');
-  df.className = 'dev-frame ' + d;
-  pp.className = 'preview-panel';
-  if (d === 'mobile' || d === 'tablet') pp.classList.add(d + '-view');
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('dev-'+d).classList.add('active');
+  const df=document.getElementById('devFrame'), pp=document.getElementById('previewPanel');
+  df.className='dev-frame '+d;
+  pp.className='preview-panel';
+  if(d==='mobile'||d==='tablet') pp.classList.add(d+'-view');
 }
 
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 // EDITOR ACTIONS
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 function applyEditor() {
-  if (monacoReady && monacoMain) {
-    lastCode = monacoMain.getValue();
-  } else {
-    const el = document.getElementById('mobileEditor');
-    if (el) lastCode = el.value;
-  }
+  lastCode = getEditorValue();
   document.getElementById('mainFrame').srcdoc = lastCode;
   setStatus('done','Applied!');
   setView('preview');
 }
-function formatEditor() { if (monacoReady && monacoMain) monacoMain.getAction('editor.action.formatDocument').run(); }
+function formatEditor() { if(monacoReady&&monacoMain) monacoMain.getAction('editor.action.formatDocument').run(); }
 function applySplit() {
-  if (monacoReady && monacoSplit) {
-    lastCode = monacoSplit.getValue();
-    monacoMain.setValue(lastCode);
-  } else {
-    const el = document.getElementById('mobileSplitEditor');
-    if (el) { lastCode = el.value; const el2 = document.getElementById('mobileEditor'); if(el2) el2.value = lastCode; }
-  }
+  if (monacoReady&&monacoSplit) { lastCode=monacoSplit.getValue(); monacoMain.setValue(lastCode); }
+  else { const el=document.getElementById('mobileSplitEditor'); if(el){ lastCode=el.value; const a=document.getElementById('mobileEditor'); if(a) a.value=lastCode; } }
   document.getElementById('splitFrame').srcdoc = lastCode;
   setStatus('done','Applied!');
 }
 
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 // EXPORT
-// ─────────────────────────────────────────────
-function copyCode()   { if (!lastCode) { setStatus('error','Nothing to copy'); return; } navigator.clipboard.writeText(lastCode).then(() => setStatus('done','Copied!')); }
-function exportCode() { if (!lastCode) { setStatus('error','Generate first'); return; } const b = new Blob([lastCode],{type:'text/html'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'ai-generated-site.html'; a.click(); setStatus('done','Downloaded!'); }
-function openInTab()  { if (!lastCode) { setStatus('error','Generate first'); return; } const b = new Blob([lastCode],{type:'text/html'}); window.open(URL.createObjectURL(b),'_blank'); }
+// ═══════════════════════════════════════════════
+function copyCode()   { if(!lastCode){setStatus('error','Nothing to copy');return;} navigator.clipboard.writeText(lastCode).then(()=>setStatus('done','Copied!')); }
+function exportCode() { if(!lastCode){setStatus('error','Generate first');return;} const b=new Blob([lastCode],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='site.html'; a.click(); setStatus('done','Downloaded!'); }
+function openInTab()  { if(!lastCode){setStatus('error','Generate first');return;} window.open(URL.createObjectURL(new Blob([lastCode],{type:'text/html'})),'_blank'); }
 
-// ─────────────────────────────────────────────
-// RESIZE HANDLE
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
+// RESIZE
+// ═══════════════════════════════════════════════
 let isResizing = false;
-const rh = document.getElementById('rhandle');
-rh.addEventListener('mousedown', () => {
-  isResizing = true;
-  rh.classList.add('dragging');
-  document.body.style.cursor = 'col-resize';
-  document.body.style.userSelect = 'none';
-});
+document.getElementById('rhandle').addEventListener('mousedown', () => { isResizing=true; document.getElementById('rhandle').classList.add('dragging'); document.body.style.cursor='col-resize'; document.body.style.userSelect='none'; });
 document.addEventListener('mousemove', e => {
   if (!isResizing) return;
-  const sp   = document.getElementById('splitPanel');
-  const rect = sp.getBoundingClientRect();
-  const pct  = Math.max(25, Math.min(75, ((e.clientX - rect.left) / rect.width) * 100));
-  document.getElementById('splitPrev').style.cssText = 'flex:none;width:' + pct + '%';
-  if (monacoSplit) monacoSplit.layout();
+  const sp=document.getElementById('splitPanel'), rect=sp.getBoundingClientRect();
+  const pct=Math.max(25,Math.min(75,((e.clientX-rect.left)/rect.width)*100));
+  document.getElementById('splitPrev').style.cssText='flex:none;width:'+pct+'%';
+  if(monacoSplit) monacoSplit.layout();
 });
-document.addEventListener('mouseup', () => {
-  if (isResizing) {
-    isResizing = false;
-    rh.classList.remove('dragging');
-    document.body.style.cursor = '';
-    document.body.style.userSelect = '';
-  }
-});
+document.addEventListener('mouseup', () => { if(isResizing){ isResizing=false; document.getElementById('rhandle').classList.remove('dragging'); document.body.style.cursor=''; document.body.style.userSelect=''; } });
 
-// ─────────────────────────────────────────────
-// KEYBOARD SHORTCUTS
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════
 document.addEventListener('keydown', e => {
-  if (e.ctrlKey && e.key === 'Enter') generate();
-  if (e.ctrlKey && e.key === '1') { e.preventDefault(); setView('preview'); }
-  if (e.ctrlKey && e.key === '2') { e.preventDefault(); setView('editor');  }
-  if (e.ctrlKey && e.key === '3') { e.preventDefault(); setView('split');   }
-  if (e.key === 'Escape') closeProjModal();
+  if(e.ctrlKey&&e.key==='Enter') generate();
+  if(e.ctrlKey&&e.key==='1'){e.preventDefault();setView('preview');}
+  if(e.ctrlKey&&e.key==='2'){e.preventDefault();setView('editor');}
+  if(e.ctrlKey&&e.key==='3'){e.preventDefault();setView('split');}
+  if(e.key==='Escape') closeProjModal();
 });
 
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 // INIT
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════
 (function init() {
+  if (IS_MOBILE) {
+    initMobileEditors();
+  } else {
+    initMonaco();
+  }
   renderTemplates(TEMPLATES);
   renderProjects();
   renderVersions();
   if (currentProjectId) {
-    const p = projects.find(p => p.id === currentProjectId);
+    const p = projects.find(p=>p.id===currentProjectId);
     if (p) document.getElementById('projNameDisplay').textContent = p.name;
   }
 })();
-
 </script>
 </body>
 </html>
