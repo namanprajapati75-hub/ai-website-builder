@@ -524,47 +524,6 @@ function addChatMsg(role, text) {
 }
 
 // ─────────────────────────────────────────────
-// STREAMING HELPER
-// ─────────────────────────────────────────────
-async function streamRequest(endpoint, body, onChunk, onDone, onError) {
-  try {
-    const url = API_BASE + endpoint;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-
-    if (!res.ok) {
-      throw new Error(`Server error: ${res.status} ${res.statusText}`);
-    }
-
-    const reader  = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        try {
-          const d = JSON.parse(line.slice(6));
-          if      (d.type === 'chunk') onChunk(d.content);
-          else if (d.type === 'done')  onDone(d.html);
-          else if (d.type === 'error') onError(new Error(d.message));
-        } catch(e) {}
-      }
-    }
-  } catch(err) {
-    onError(err);
-  }
-}
-
-// ─────────────────────────────────────────────
 // GENERATE
 // ─────────────────────────────────────────────
 async function generate() {
@@ -572,10 +531,10 @@ async function generate() {
   const prompt = document.getElementById('prompt').value.trim();
   if (!prompt) { setStatus('error', 'Enter a prompt first!'); return; }
 
-  const btn       = document.getElementById('genBtn');
-  const btnTxt    = document.getElementById('btnTxt');
-  const sovlay    = document.getElementById('sovlay');
-  const schars    = document.getElementById('streamChars');
+  const btn        = document.getElementById('genBtn');
+  const btnTxt     = document.getElementById('btnTxt');
+  const sovlay     = document.getElementById('sovlay');
+  const schars     = document.getElementById('streamChars');
   const emptyState = document.getElementById('emptyState');
 
   isGenerating = true;
@@ -584,48 +543,39 @@ async function generate() {
   btnTxt.textContent = 'Generating...';
   sovlay.classList.add('show');
   document.getElementById('sovlayTxt').textContent = 'Generating';
+  schars.textContent = 'Please wait ~15s...';
   setStatus('loading', 'AI is building your website...');
 
-  let accumulated = '';
-  let updateTimer = null;
+  try {
+    const res  = await fetch(API_BASE + '/generate', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ prompt })
+    });
+    const data = await res.json();
 
-  await streamRequest('/generate', { prompt },
-    (chunk) => {
-      accumulated += chunk;
-      schars.textContent = accumulated.length.toLocaleString() + ' chars';
-      clearTimeout(updateTimer);
-      updateTimer = setTimeout(() => {
-        if (accumulated.includes('<body')) {
-          document.getElementById('mainFrame').srcdoc = accumulated;
-          if (currentView === 'split') document.getElementById('splitFrame').srcdoc = accumulated;
-          emptyState.classList.add('gone');
-        }
-      }, 60);
-    },
-    (html) => {
-      lastCode = html;
-      document.getElementById('mainFrame').srcdoc  = html;
-      document.getElementById('splitFrame').srcdoc = html;
-      emptyState.classList.add('gone');
-      if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
-      setStatus('done', `Done! ${html.length.toLocaleString()} chars`);
-      addVersion('generate', prompt, html);
-      saveCurrentProject(prompt, html);
-      isGenerating = false;
-      btn.classList.remove('loading');
-      btn.disabled = false;
-      btnTxt.textContent = 'Generate Website';
-      sovlay.classList.remove('show');
-    },
-    (err) => {
-      setStatus('error', err.message || 'Generation failed');
-      isGenerating = false;
-      btn.classList.remove('loading');
-      btn.disabled = false;
-      btnTxt.textContent = 'Generate Website';
-      sovlay.classList.remove('show');
-    }
-  );
+    if (!data.success) throw new Error(data.error || 'Generation failed');
+
+    const html = data.html;
+    lastCode   = html;
+    document.getElementById('mainFrame').srcdoc  = html;
+    document.getElementById('splitFrame').srcdoc = html;
+    emptyState.classList.add('gone');
+    if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
+    setStatus('done', `Done! ${html.length.toLocaleString()} chars`);
+    schars.textContent = html.length.toLocaleString() + ' chars';
+    addVersion('generate', prompt, html);
+    saveCurrentProject(prompt, html);
+
+  } catch(err) {
+    setStatus('error', err.message || 'Generation failed');
+  }
+
+  isGenerating = false;
+  btn.classList.remove('loading');
+  btn.disabled = false;
+  btnTxt.textContent = 'Generate Website';
+  sovlay.classList.remove('show');
 }
 
 // ─────────────────────────────────────────────
@@ -658,46 +608,40 @@ async function sendEdit() {
   btn.disabled = true;
   sovlay.classList.add('show');
   document.getElementById('sovlayTxt').textContent = 'Editing';
+  schars.textContent = 'Please wait...';
   setStatus('editing', 'Applying edit...');
 
-  let accumulated = '';
-  let updateTimer = null;
+  try {
+    const res  = await fetch(API_BASE + '/edit', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ html: lastCode, instruction })
+    });
+    const data = await res.json();
 
-  await streamRequest('/edit', { html: lastCode, instruction },
-    (chunk) => {
-      accumulated += chunk;
-      schars.textContent = accumulated.length.toLocaleString() + ' chars';
-      clearTimeout(updateTimer);
-      updateTimer = setTimeout(() => {
-        if (accumulated.includes('<body')) {
-          document.getElementById('mainFrame').srcdoc = accumulated;
-          if (currentView === 'split') document.getElementById('splitFrame').srcdoc = accumulated;
-        }
-      }, 60);
-    },
-    (html) => {
-      lastCode = html;
-      document.getElementById('mainFrame').srcdoc  = html;
-      document.getElementById('splitFrame').srcdoc = html;
-      if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
-      aiMsgEl.classList.remove('typing');
-      aiMsgEl.querySelector('.msg-bubble').textContent = '✓ Done! ' + instruction;
-      setStatus('done', 'Edit applied!');
-      addVersion('edit', instruction, html);
-      saveCurrentProject(null, html);
-      isGenerating = false;
-      btn.disabled = false;
-      sovlay.classList.remove('show');
-    },
-    (err) => {
-      aiMsgEl.classList.remove('typing');
-      aiMsgEl.querySelector('.msg-bubble').textContent = '❌ ' + (err.message || 'Edit failed');
-      setStatus('error', err.message || 'Edit failed');
-      isGenerating = false;
-      btn.disabled = false;
-      sovlay.classList.remove('show');
-    }
-  );
+    if (!data.success) throw new Error(data.error || 'Edit failed');
+
+    const html = data.html;
+    lastCode   = html;
+    document.getElementById('mainFrame').srcdoc  = html;
+    document.getElementById('splitFrame').srcdoc = html;
+    if (monacoReady) { monacoMain.setValue(html); monacoSplit.setValue(html); }
+    aiMsgEl.classList.remove('typing');
+    aiMsgEl.querySelector('.msg-bubble').textContent = '✓ Done! ' + instruction;
+    setStatus('done', 'Edit applied!');
+    schars.textContent = html.length.toLocaleString() + ' chars';
+    addVersion('edit', instruction, html);
+    saveCurrentProject(null, html);
+
+  } catch(err) {
+    aiMsgEl.classList.remove('typing');
+    aiMsgEl.querySelector('.msg-bubble').textContent = '❌ ' + (err.message || 'Edit failed');
+    setStatus('error', err.message || 'Edit failed');
+  }
+
+  isGenerating = false;
+  btn.disabled = false;
+  sovlay.classList.remove('show');
 }
 
 // ─────────────────────────────────────────────
