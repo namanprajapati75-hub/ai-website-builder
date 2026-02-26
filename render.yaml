@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ai-website-builder-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false          # Render dashboard mein manually daalna padega
+      - key: ALLOWED_ORIGIN
+        sync: false          # Tera Vercel URL yahan set karna
+      - key: PORT
+        value: 3000

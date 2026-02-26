@@ -25,35 +25,42 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .scanline{position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:scan 5s linear infinite;opacity:0.15;z-index:9998;pointer-events:none}
 @keyframes scan{0%{top:-1px}100%{top:100vh}}
 
-/* ── TOPBAR ── */
-.topbar{height:50px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(4,6,13,0.92);backdrop-filter:blur(20px);flex-shrink:0;position:relative;z-index:200}
-.logo{display:flex;align-items:center;gap:9px}
-.logo-icon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:13px;box-shadow:0 0 14px rgba(99,255,180,0.28);flex-shrink:0}
+/* ── TOPBAR / NAVBAR ── */
+.topbar{height:54px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(4,6,13,0.92);backdrop-filter:blur(20px);flex-shrink:0;position:relative;z-index:200;transition:height 0.3s}
+.logo{display:flex;align-items:center;gap:9px;flex-shrink:0;text-decoration:none}
+.logo-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:14px;box-shadow:0 0 16px rgba(99,255,180,0.32);flex-shrink:0;transition:box-shadow 0.3s}
+.logo:hover .logo-icon{box-shadow:0 0 26px rgba(99,255,180,0.55)}
 .logo-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.top-mid{display:flex;align-items:center;gap:8px}
-.proj-name{font-size:11px;color:var(--text);font-weight:500;cursor:pointer;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:0.15s;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.proj-name:hover{border-color:var(--border-bright);color:var(--accent)}
-.top-right{display:flex;align-items:center;gap:7px}
-.badge{font-size:9px;padding:3px 8px;border-radius:20px;border:1px solid;letter-spacing:1.5px;text-transform:uppercase}
-.bg{color:var(--accent);border-color:rgba(99,255,180,0.3);background:rgba(99,255,180,0.06)}
-.bb{color:var(--accent2);border-color:rgba(0,229,255,0.3);background:rgba(0,229,255,0.06)}
-.status-pill{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);letter-spacing:0.8px;padding:3px 9px;border-radius:20px;border:1px solid var(--border)}
-.sdot{width:5px;height:5px;border-radius:50%;background:var(--muted);transition:all 0.3s;flex-shrink:0}
+
+/* ── CENTER NAV TABS ── */
+.nav-tabs{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:2px}
+.ntab{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding:6px 14px;border-radius:7px;cursor:pointer;border:1px solid transparent;background:transparent;transition:all 0.18s;position:relative;white-space:nowrap}
+.ntab:hover{color:var(--text);background:rgba(255,255,255,0.04)}
+.ntab.active{color:var(--accent);background:rgba(99,255,180,0.08);border-color:rgba(99,255,180,0.18)}
+.ntab.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:18px;height:2px;background:var(--accent);border-radius:2px;box-shadow:0 0 8px rgba(99,255,180,0.8)}
+
+/* ── TOP RIGHT ── */
+.top-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.status-pill{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);letter-spacing:0.8px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);transition:all 0.3s}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--muted);transition:all 0.3s;flex-shrink:0}
 .sdot.idle{background:var(--muted)}
 .sdot.working{background:var(--accent2);box-shadow:0 0 6px var(--accent2);animation:sp 1.2s ease-in-out infinite}
 .sdot.done{background:var(--accent);box-shadow:0 0 6px var(--accent)}
 .sdot.err{background:var(--danger);box-shadow:0 0 5px var(--danger)}
 @keyframes sp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.75)}}
+.export-btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#04060d;background:var(--accent);border:none;padding:7px 15px;border-radius:8px;cursor:pointer;font-weight:700;transition:all 0.2s;box-shadow:0 0 14px rgba(99,255,180,0.28)}
+.export-btn:hover{background:#80ffca;box-shadow:0 0 22px rgba(99,255,180,0.5);transform:translateY(-1px)}
+.proj-name{font-size:10px;color:var(--muted);cursor:pointer;padding:4px 10px;border-radius:6px;border:1px solid var(--border);transition:0.15s;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none}
+.proj-name:hover{border-color:var(--border-bright);color:var(--accent)}
+.badge{font-size:9px;padding:3px 8px;border-radius:20px;border:1px solid;letter-spacing:1.5px;text-transform:uppercase}
+.bg{color:var(--accent);border-color:rgba(99,255,180,0.3);background:rgba(99,255,180,0.06)}
+.bb{color:var(--accent2);border-color:rgba(0,229,255,0.3);background:rgba(0,229,255,0.06)}
 
 /* ── LAYOUT ── */
 .app-body{flex:1;display:flex;overflow:hidden;position:relative;z-index:10}
 
 /* ── LEFT PANEL ── */
 .left-panel{width:280px;min-width:280px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--surface);overflow:hidden}
-.panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
-.ptab{flex:1;padding:11px 0;font-size:10px;color:var(--muted);cursor:pointer;border:none;background:transparent;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;transition:0.15s;border-bottom:2px solid transparent}
-.ptab:hover{color:var(--text)}
-.ptab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .panel-page{display:none;flex-direction:column;flex:1;overflow:hidden}
 .panel-page.active{display:flex}
 
@@ -251,6 +258,12 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 .tmpl-btn-gen{font-size:9px;padding:3px 9px;border:none;border-radius:5px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04060d;cursor:pointer;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:0.8px;transition:0.15s}
 .tmpl-btn-gen:hover{opacity:0.85;transform:translateY(-1px)}
 .tmpl-empty{text-align:center;padding:30px 0;font-size:10px;color:var(--muted)}
+/* ── LAYOUT PRESETS ── */
+.layout-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:2px}
+.lchip{font-size:10px;padding:4px 11px;border:1px solid var(--border);border-radius:20px;color:var(--muted);cursor:pointer;transition:0.15s;white-space:nowrap;background:transparent}
+.lchip:hover{border-color:var(--border-bright);color:var(--accent);background:rgba(99,255,180,0.05)}
+.lchip.active{border-color:var(--accent);background:rgba(99,255,180,0.1);color:var(--accent)}
+
 /* ── STYLE PRESETS ── */
 .preset-section{display:flex;flex-direction:column;gap:8px}
 .preset-row{display:flex;flex-direction:column;gap:5px}
@@ -300,14 +313,16 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
   /* Show hamburger */
   .mob-toggle{display:flex}
 
-  /* Hide topbar clutter on mobile */
-  .top-mid{display:none}
+  /* Hide nav tabs + badges on mobile */
+  .nav-tabs{display:none}
   .badge{display:none}
+  .export-btn{display:none}
+  .status-pill span:last-child{display:none}
 
   /* Left panel — slide in from left as drawer */
   .left-panel{
     position:fixed;
-    top:50px;
+    top:54px;
     left:0;
     bottom:0;
     width:80vw;
@@ -336,7 +351,6 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 
   /* Top bar right — compact */
   .top-right{gap:4px}
-  .status-pill .sdot + *{display:none} /* hide status text, keep dot */
 
   /* Prompt textarea — taller on mobile for thumb typing */
   .pw textarea{height:90px;font-size:12px}
@@ -367,14 +381,26 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="logo"><div class="logo-icon">⚡</div><div class="logo-text">AI Builder</div></div>
-  <div class="top-mid">
-    <div class="proj-name" id="projNameDisplay" onclick="showProjModal()">Untitled Project</div>
-    <div class="status-pill"><div class="sdot idle" id="sdot"></div><span id="sdotTxt">idle</span></div>
+  <a class="logo" href="#" onclick="return false">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-text">AI Builder</div>
+  </a>
+
+  <!-- CENTER NAV TABS -->
+  <div class="nav-tabs">
+    <button class="ntab active" onclick="showPanelPage('gen',this)">Generate</button>
+    <button class="ntab" onclick="showPanelPage('tmpl',this)">Templates</button>
+    <button class="ntab" onclick="showPanelPage('chat',this)">Edit</button>
+    <button class="ntab" onclick="showPanelPage('proj',this)">Projects</button>
+    <button class="ntab" onclick="showPanelPage('ver',this)">Versions</button>
   </div>
+
   <div class="top-right">
+    <div class="status-pill"><div class="sdot idle" id="sdot"></div><span id="sdotTxt">idle</span></div>
+    <div class="proj-name" id="projNameDisplay" onclick="showProjModal()">Untitled</div>
     <div class="badge bg">Groq</div>
     <div class="badge bb">70B</div>
+    <button class="export-btn" onclick="exportCode()">Export</button>
     <button class="mob-toggle" id="mobToggle" onclick="toggleMobilePanel()" aria-label="Toggle panel">
       <span></span><span></span><span></span>
     </button>
@@ -389,13 +415,6 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
 
   <!-- LEFT PANEL -->
   <div class="left-panel">
-    <div class="panel-tabs">
-      <button class="ptab active" onclick="showPanelPage('gen',this)">Generate</button>
-      <button class="ptab" onclick="showPanelPage('tmpl',this)">Templates</button>
-      <button class="ptab" onclick="showPanelPage('chat',this)">Edit</button>
-      <button class="ptab" onclick="showPanelPage('proj',this)">Projects</button>
-      <button class="ptab" onclick="showPanelPage('ver',this)">Versions</button>
-    </div>
 
     <!-- GENERATE PAGE -->
     <div class="panel-page active" id="page-gen">
@@ -421,6 +440,18 @@ iframe{width:100%;height:100%;border:none;display:block;background:#fff}
           </div>
         </div>
         <div class="preset-section">
+          <div class="preset-row">
+            <div class="preset-label">Layout Preset</div>
+            <div class="layout-chips">
+              <div class="lchip active" data-style="" onclick="selectLayout(this)">✦ Auto</div>
+              <div class="lchip" data-style="dark-saas" onclick="selectLayout(this)">Dark SaaS</div>
+              <div class="lchip" data-style="agency" onclick="selectLayout(this)">Agency</div>
+              <div class="lchip" data-style="portfolio" onclick="selectLayout(this)">Portfolio</div>
+              <div class="lchip" data-style="startup" onclick="selectLayout(this)">Startup</div>
+              <div class="lchip" data-style="ecommerce" onclick="selectLayout(this)">E-Commerce</div>
+              <div class="lchip" data-style="restaurant" onclick="selectLayout(this)">Restaurant</div>
+            </div>
+          </div>
           <div class="preset-row">
             <div class="preset-label">Color Palette</div>
             <div class="palettes" id="palettes">
@@ -751,7 +782,7 @@ async function generate() {
 
   let accumulated='', updateTimer=null;
 
-  await streamRequest(API_BASE+'/generate', {prompt},
+  await streamRequest(API_BASE+'/generate', {prompt, style: selectedLayoutPreset, colorScheme: getColorSchemeKey()},
     (chunk) => {
       accumulated+=chunk;
       schars.textContent=accumulated.length.toLocaleString()+' chars';
@@ -791,7 +822,7 @@ function chatKeydown(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); s
 
 async function sendEdit() {
   if(isGenerating) return;
-  if(!lastCode){ setStatus('error','Generate a website first!'); showPanelPage('gen',document.querySelectorAll('.ptab')[0]); return; }
+  if(!lastCode){ setStatus('error','Generate a website first!'); showPanelPage('gen', document.querySelectorAll('.ntab')[0]); return; }
   const input=document.getElementById('chatInput'), instruction=input.value.trim();
   if(!instruction) return;
 
@@ -961,7 +992,7 @@ function createNewProject() {
   if(monacoReady){ monacoMain.setValue('<!-- New project -->'); monacoSplit.setValue('<!-- New project -->'); }
   setStatus('idle','New project created');
   renderProjects();
-  showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
+  showPanelPage('gen', document.querySelectorAll('.ntab')[0]);
 }
 
 // PROJECT NAME MODAL
@@ -1089,14 +1120,14 @@ function useTemplate(i) {
   const t = TEMPLATES[i];
   document.getElementById('prompt').value = t.prompt;
   updateChar(document.getElementById('prompt'));
-  showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
+  showPanelPage('gen', document.querySelectorAll('.ntab')[0]);
 }
 
 function instantGenerate(i) {
   const t = TEMPLATES[i];
   document.getElementById('prompt').value = t.prompt;
   updateChar(document.getElementById('prompt'));
-  showPanelPage('gen', document.querySelectorAll('.ptab')[0]);
+  showPanelPage('gen', document.querySelectorAll('.ntab')[0]);
   setTimeout(() => generate(), 100);
 }
 
@@ -1108,10 +1139,13 @@ document.addEventListener('DOMContentLoaded', () => renderTemplates(TEMPLATES));
 // ─────────────────────────────────────────────
 function showPanelPage(name, btn) {
   document.querySelectorAll('.panel-page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   if(btn) btn.classList.add('active');
-  else { const tabs={gen:0,tmpl:1,chat:2,proj:3,ver:4}; document.querySelectorAll('.ptab')[tabs[name]||0].classList.add('active'); }
+  else {
+    const tabs={gen:0,tmpl:1,chat:2,proj:3,ver:4};
+    document.querySelectorAll('.ntab')[tabs[name]||0].classList.add('active');
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -1175,10 +1209,17 @@ document.addEventListener('keydown',e=>{
 
 
 // ─────────────────────────────────────────────
-// STYLE PRESETS — palette & font picker
+// STYLE PRESETS — palette, font & layout picker
 // ─────────────────────────────────────────────
 let selectedPalette = 'CYBERPUNK dark neon purple color scheme';
 let selectedFont    = 'modern geometric sans-serif fonts';
+let selectedLayoutPreset = '';
+
+// Palette → colorScheme key map
+const PALETTE_TO_KEY = {
+  'Cyberpunk':'cyberpunk','Emerald':'emerald','Sunset':'sunset',
+  'Ocean':'ocean','Rose':'rose','Minimal':'auto'
+};
 
 function selectPalette(el) {
   document.querySelectorAll('.palette').forEach(p => p.classList.remove('selected'));
@@ -1192,11 +1233,22 @@ function selectFont(el) {
   selectedFont = el.dataset.value;
 }
 
+function selectLayout(el) {
+  document.querySelectorAll('.lchip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedLayoutPreset = el.dataset.style;
+}
+
 // Inject style context into prompt before generating
 function buildPromptWithStyle(basePrompt) {
   const paletteName = document.querySelector('.palette.selected')?.dataset.name || '';
   const fontName    = document.querySelector('.font-opt.selected .font-main')?.textContent || '';
   return basePrompt + '\n\nSTYLE: Use ' + selectedPalette + '. Use ' + selectedFont + '. Palette: ' + paletteName + '. Font style: ' + fontName + '.';
+}
+
+function getColorSchemeKey() {
+  const paletteName = document.querySelector('.palette.selected')?.dataset.name || '';
+  return PALETTE_TO_KEY[paletteName] || 'auto';
 }
 
 // ─────────────────────────────────────────────
@@ -1223,7 +1275,7 @@ function closeMobilePanel() {
 }
 
 // Close panel when a tab is clicked on mobile
-document.querySelectorAll('.ptab').forEach(tab => {
+document.querySelectorAll('.ntab').forEach(tab => {
   tab.addEventListener('click', () => {
     if (window.innerWidth <= 768) setTimeout(closeMobilePanel, 200);
   });

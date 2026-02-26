@@ -2,10 +2,52 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 const Groq = require("groq-sdk");
 
 const app = express();
-app.use(cors());
+
+// ─────────────────────────────────────────────
+// CORS — only allow your own frontend domain
+// Set ALLOWED_ORIGIN in .env for production
+// e.g. ALLOWED_ORIGIN=https://ai-website-builder.vercel.app
+// ─────────────────────────────────────────────
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "https://ai-website-builder-nine-livid.vercel.app";
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (Postman, curl, etc.) in dev
+    if (!origin || ALLOWED_ORIGIN === "*") return callback(null, true);
+    if (origin === ALLOWED_ORIGIN) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+}));
+
+// ─────────────────────────────────────────────
+// RATE LIMITING
+// ─────────────────────────────────────────────
+
+// General API limit — 100 requests per 15 min per IP
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: "Too many requests. Please wait a few minutes." },
+});
+
+// Strict limit on AI endpoints — 10 generates per 15 min per IP
+// (Groq API costs money, protect yourself!)
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: "AI generation limit reached. Try again in 15 minutes." },
+});
+
+app.use(generalLimiter);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -19,6 +61,8 @@ ABSOLUTE OUTPUT RULE
 - Output ONLY raw HTML starting with <!DOCTYPE html>
 - NO markdown, NO backticks, NO explanation
 - All CSS in <style>, all JS in <script>
+- CRITICAL: You MUST always end the response with </script></body></html> — never cut off mid-generation
+- If you are running low on space, skip optional sections but ALWAYS close the document properly
 
 ═══════════════════════════════════════
 MANDATORY LIBRARIES — ALWAYS INCLUDE IN <head>
@@ -221,10 +265,28 @@ function isHTMLComplete(html) {
   );
 }
 
+// Try to auto-repair truncated HTML by closing open tags
+function repairHTML(html) {
+  let repaired = html.trim();
+
+  // If </body> missing but </html> also missing — add both
+  if (!repaired.toLowerCase().includes("</body>")) {
+    // Close any open script tag first
+    const openScript = (repaired.match(/<script/gi) || []).length > (repaired.match(/<\/script>/gi) || []).length;
+    if (openScript) repaired += "\n</script>";
+    repaired += "\n</body>";
+  }
+  if (!repaired.toLowerCase().includes("</html>")) {
+    repaired += "\n</html>";
+  }
+
+  return repaired;
+}
+
 // ─────────────────────────────────────────────
 // GENERATE (streaming)
 // ─────────────────────────────────────────────
-app.post("/generate", async (req, res) => {
+app.post("/generate", aiLimiter, async (req, res) => {
   try {
     const { prompt } = req.body;
     if (!prompt || prompt.trim().length < 3) {
@@ -242,13 +304,13 @@ app.post("/generate", async (req, res) => {
     const stream = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       temperature: 0.75,
-      max_tokens: 8000,
+      max_tokens: 32000,
       stream: true,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         {
           role: "user",
-          content: `Build a stunning award-winning website for: ${prompt}\n\nUSE: Lenis smooth scroll, GSAP animations, GSAP ScrollTrigger, Swiper slider, custom cursor, magnetic buttons, parallax effects, real Unsplash images, pravatar.cc avatars.\nOutput ONLY HTML starting with <!DOCTYPE html>.`,
+          content: `Build a stunning award-winning website for: ${prompt}\n\nUSE: Lenis smooth scroll, GSAP animations, GSAP ScrollTrigger, Swiper slider, custom cursor, magnetic buttons, parallax effects, real Unsplash images, pravatar.cc avatars.\nOutput ONLY HTML starting with <!DOCTYPE html>. Make sure the HTML is COMPLETE — always end with </body></html>.`,
         },
       ],
     });
@@ -264,15 +326,21 @@ app.post("/generate", async (req, res) => {
 
     const html = cleanHTML(full);
 
-    // ✅ Incomplete HTML check
+    // ✅ Incomplete HTML check — try to repair before erroring
     if (!isHTMLComplete(html)) {
-      console.warn("⚠️ Truncated HTML detected");
-      res.write(
-        `data: ${JSON.stringify({
-          type: "error",
-          message: "Response was cut off (too long). Please try a shorter/simpler prompt.",
-        })}\n\n`
-      );
+      console.warn("⚠️ Truncated HTML detected — attempting repair");
+      const repaired = repairHTML(html);
+      if (isHTMLComplete(repaired)) {
+        console.log("✅ HTML repaired successfully");
+        res.write(`data: ${JSON.stringify({ type: "done", html: repaired, warning: "Response was partially truncated but auto-repaired." })}\n\n`);
+      } else {
+        res.write(
+          `data: ${JSON.stringify({
+            type: "error",
+            message: "Response was cut off and could not be repaired. Try a simpler/shorter prompt.",
+          })}\n\n`
+        );
+      }
       res.end();
       return;
     }
@@ -293,7 +361,7 @@ app.post("/generate", async (req, res) => {
 // ─────────────────────────────────────────────
 // EDIT (streaming)
 // ─────────────────────────────────────────────
-app.post("/edit", async (req, res) => {
+app.post("/edit", aiLimiter, async (req, res) => {
   try {
     const { html, instruction } = req.body;
     if (!html || !instruction) {
@@ -311,13 +379,13 @@ app.post("/edit", async (req, res) => {
     const stream = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       temperature: 0.4,
-      max_tokens: 8000,
+      max_tokens: 32000,
       stream: true,
       messages: [
         { role: "system", content: EDIT_PROMPT },
         {
           role: "user",
-          content: `Current HTML:\n\n${html}\n\n---\nEdit instruction: ${instruction}\nReturn complete modified HTML only.`,
+          content: `Current HTML:\n\n${html}\n\n---\nEdit instruction: ${instruction}\nReturn complete modified HTML only. Always end with </body></html>.`,
         },
       ],
     });
@@ -333,15 +401,21 @@ app.post("/edit", async (req, res) => {
 
     const edited = cleanHTML(full);
 
-    // ✅ Incomplete HTML check
+    // ✅ Incomplete HTML check — try to repair before erroring
     if (!isHTMLComplete(edited)) {
-      console.warn("⚠️ Truncated edit HTML detected");
-      res.write(
-        `data: ${JSON.stringify({
-          type: "error",
-          message: "Edit response was cut off. Try a simpler edit instruction.",
-        })}\n\n`
-      );
+      console.warn("⚠️ Truncated edit HTML detected — attempting repair");
+      const repaired = repairHTML(edited);
+      if (isHTMLComplete(repaired)) {
+        console.log("✅ Edit HTML repaired successfully");
+        res.write(`data: ${JSON.stringify({ type: "done", html: repaired, warning: "Response was partially truncated but auto-repaired." })}\n\n`);
+      } else {
+        res.write(
+          `data: ${JSON.stringify({
+            type: "error",
+            message: "Edit response was cut off and could not be repaired. Try a simpler edit instruction.",
+          })}\n\n`
+        );
+      }
       res.end();
       return;
     }
